@@ -572,196 +572,196 @@
                                     <th class="p-3">Categoría</th>
                                     <th class="p-3">Stock Calc. (Kardex)</th>
                                     <th class="p-3">Última Compra</th>
-                                    <th class="p-3">Costo Ponderado</th>
-                                    <th class="p-3 text-right rounded-r-lg">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-insumos" class="divide-y divide-gray-100"></tbody>
-                        </table>
+        <!-- ================= TAB 6: CONTROL IVA & F29 ================= -->
+        <div id="content-iva" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-file-invoice text-emerald-600"></i> Control Fiscal de IVA & Declaración F29
+                        </h3>
+                        <p class="text-xs text-gray-500">Monitoreo mensual de Débito Fiscal (Ventas) vs. Crédito Fiscal (Compras y Gastos).</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <select id="iva-filtro-mes" onchange="renderIVAMensual()" class="p-2 border border-gray-300 rounded-xl text-xs font-bold bg-white text-gray-800">
+                            <option value="2026-03" selected>Marzo 2026</option>
+                            <option value="2026-02">Febrero 2026</option>
+                            <option value="2026-01">Enero 2026</option>
+                        </select>
+                        <button onclick="abrirModalGastoGeneral()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-md">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>+ Factura Gasto Taller</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- 3. Proveedores -->
-                <div id="arch-proveedores-container" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-500 font-medium">Maestro de distribuidores con datos logísticos completos.</span>
-                        <button onclick="abrirModalProveedor()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Nuevo Proveedor</span>
-                        </button>
+                <!-- Tarjetas de Resumen Fiscal -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-1">
+                        <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">IVA Débito Fiscal (Ventas)</span>
+                        <span id="iva-debito-monto" class="text-xl font-black text-emerald-700">$0 CLP</span>
+                        <span class="text-[10px] text-emerald-600 block">Generado en ventas afectas 19%</span>
                     </div>
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl space-y-1">
+                        <span class="text-[10px] font-bold text-blue-800 uppercase tracking-wider block">IVA Crédito Fiscal (Compras/Gastos)</span>
+                        <span id="iva-credito-monto" class="text-xl font-black text-blue-700">$0 CLP</span>
+                        <span class="text-[10px] text-blue-600 block">Facturas de insumos y servicios</span>
+                    </div>
+                    <div id="box-f29-resultado" class="bg-purple-50 border border-purple-200 p-4 rounded-xl space-y-1">
+                        <span id="f29-titulo-resultado" class="text-[10px] font-bold text-purple-800 uppercase tracking-wider block">Impuesto Neto a Pagar F29</span>
+                        <span id="iva-neto-monto" class="text-xl font-black text-purple-700">$0 CLP</span>
+                        <span id="f29-sub-resultado" class="text-[10px] text-purple-600 block">Estimado a declarar en SII</span>
+                    </div>
+                </div>
+
+                <!-- Tabla de Registro de Gastos y Compras -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-receipt text-gray-600"></i> Registro de Facturas de Compras y Gastos Operativos
+                    </h4>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
                                 <tr>
-                                    <th class="p-3 rounded-l-lg">RUT Proveedor</th>
-                                    <th class="p-3">Nombre / Razón Social</th>
-                                    <th class="p-3">Comuna / Ciudad</th>
-                                    <th class="p-3">Contacto / Correo</th>
-                                    <th class="p-3">Sitio Web</th>
+                                    <th class="p-3 rounded-l-lg">Fecha</th>
+                                    <th class="p-3">N° Factura</th>
+                                    <th class="p-3">Proveedor / Emisor</th>
+                                    <th class="p-3">Detalle / Concepto</th>
+                                    <th class="p-3 text-right">Monto Neto</th>
+                                    <th class="p-3 text-right">IVA (19%)</th>
+                                    <th class="p-3 text-right">Total Bruto</th>
                                     <th class="p-3 text-right rounded-r-lg">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-proveedores" class="divide-y divide-gray-100"></tbody>
+                            <tbody id="tabla-gastos-iva" class="divide-y divide-gray-100"></tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- 4. Courriers -->
-                <div id="arch-courriers-container" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-500 font-medium">Registro de empresas de transporte y encomiendas.</span>
-                        <button onclick="abrirModalCourrier()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Nuevo Courrier</span>
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
-                                <tr>
-                                    <th class="p-3 rounded-l-lg">Código</th>
-                                    <th class="p-3">Nombre Empresa</th>
-                                    <th class="p-3">Teléfono / Seguimiento</th>
-                                    <th class="p-3 font-medium">Web / Portal</th>
-                                    <th class="p-3 text-right rounded-r-lg">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-courriers" class="divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 5. Mano de Obra (Matriz) -->
-                <div id="arch-manoobra-container" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-500 font-medium">Tablas de tarifas y factores de cálculo para mano de obra en Vinilos y Sustratos.</span>
-                        <button onclick="abrirModalManoObra()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Nueva Tarifa Mano de Obra</span>
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Tabla Vinilos -->
-                        <div class="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
-                            <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fa-solid fa-scissors text-brand-600"></i> Tarifas Mano de Obra para Vinilos
-                            </h4>
-                            <table class="w-full text-left text-xs bg-white rounded-lg overflow-hidden border">
-                                <thead class="bg-gray-100 font-semibold text-gray-700">
-                                    <tr>
-                                        <th class="p-2">Descripción / Nivel</th>
-                                        <th class="p-2 text-right">Base/m²</th>
-                                        <th class="p-2 text-right">Factor</th>
-                                        <th class="p-2 text-right">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-mo-vinilos" class="divide-y divide-gray-100"></tbody>
-                            </table>
-                        </div>
-
-                        <!-- Tabla Sustratos -->
-                        <div class="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
-                            <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fa-solid fa-layer-group text-blue-600"></i> Tarifas Mano de Obra para Sustratos
-                            </h4>
-                            <table class="w-full text-left text-xs bg-white rounded-lg overflow-hidden border">
-                                <thead class="bg-gray-100 font-semibold text-gray-700">
-                                    <tr>
-                                        <th class="p-2">Descripción / Proceso</th>
-                                        <th class="p-2 text-right">Tarifa $/Hora</th>
-                                        <th class="p-2 text-right">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-mo-sustratos" class="divide-y divide-gray-100"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
 
-        <!-- ================= TAB 5: MOVIMIENTOS & KARDEX ================= -->
-        <div id="content-kardex" class="tab-content space-y-6">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <!-- ================= TAB 7: CONSULTAS & REPORTES ================= -->
+        <div id="content-consultas" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
                     <div>
                         <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-boxes-stacked text-amber-500"></i> Control Estricto de Kardex e Inventario
+                            <i class="fa-solid fa-chart-line text-brand-600"></i> Consultas & Reportes del Taller
                         </h3>
-                        <p class="text-xs text-gray-500">El stock disponible se determina mediante la sumatoria exacta de Entradas menos Salidas.</p>
+                        <p class="text-xs text-gray-500">Métricas de rentabilidad, ventas por cliente e insumos de mayor rotación.</p>
                     </div>
-                    <button onclick="abrirModalMovimiento()" class="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-md">
-                        <i class="fa-solid fa-arrow-transfer-xmark"></i>
-                        <span>+ Registrar Transacción Kardex</span>
-                    </button>
+                    <select id="rep-tipo-select" onchange="renderConsultas()" class="p-2 border border-gray-300 rounded-xl text-xs font-bold bg-white text-brand-900">
+                        <option value="rentabilidad" selected>Reporte 1: Rentabilidad por Proyecto</option>
+                        <option value="ventas_cliente">Reporte 2: Total Ventas por Cliente</option>
+                        <option value="rotacion_insumos">Reporte 3: Consumo & Rotación de Insumos</option>
+                    </select>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
-                    <div>
-                        <label class="block font-semibold text-gray-700 text-[11px] mb-1">Filtrar por Insumo:</label>
-                        <select id="kardex-filtro-insumo" onchange="renderKardex()" class="w-full p-2 border border-gray-300 rounded-lg text-xs bg-white">
-                            <!-- JS Populate -->
-                        </select>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-gray-500 block">Total Facturado en Proyectos:</span>
+                            <span id="rep-total-ventas" class="text-xl font-bold text-gray-900">$0 CLP</span>
+                        </div>
+                        <i class="fa-solid fa-sack-dollar text-3xl text-emerald-500/40"></i>
                     </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 text-[11px] mb-1">Filtrar por Transacción:</label>
-                        <select id="kardex-filtro-tipo" onchange="renderKardex()" class="w-full p-2 border border-gray-300 rounded-lg text-xs bg-white">
-                            <option value="todos">Todas las Transacciones</option>
-                            <option value="ENTRADA">Solo ENTRADAS (Compras/Ajustes)</option>
-                            <option value="SALIDA">Solo SALIDAS (Consumo/Merma/Venta)</option>
-                        </select>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-gray-500 block">Costo Total de Producción:</span>
+                            <span id="rep-total-costos" class="text-xl font-bold text-gray-900">$0 CLP</span>
+                        </div>
+                        <i class="fa-solid fa-coins text-3xl text-amber-500/40"></i>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
-                        <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
-                            <tr>
-                                <th class="p-3 rounded-l-lg">Fecha</th>
-                                <th class="p-3">Insumo / Artículo</th>
-                                <th class="p-3">Transacción</th>
-                                <th class="p-3">Concepto</th>
-                                <th class="p-3 text-center">Unidad / Cant.</th>
-                                <th class="p-3 text-right">Equiv. m²</th>
-                                <th class="p-3 text-right">Costo Unit.</th>
-                                <th class="p-3 text-right">Total Trans.</th>
-                                <th class="p-3 text-right rounded-r-lg">Acción</th>
-                            </tr>
+                        <thead id="head-tabla-reporte" class="bg-gray-50 text-gray-600 uppercase font-medium">
+                            <!-- JS Populate Head -->
                         </thead>
-                        <tbody id="tabla-kardex" class="divide-y divide-gray-100"></tbody>
+                        <tbody id="tabla-reporte" class="divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL REGISTRO PROYECTO FORMAL (Nombre + Correlativo) -->
-        <div id="modal-crear-proyecto" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <!-- ================= TAB 8: MANUAL DE USUARIO ================= -->
+        <div id="content-manual" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
+                <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark text-brand-600"></i> Manual de Usuario & Guía Operativa Taller
+                        </h3>
+                        <p class="text-xs text-gray-500">Documentación de opciones y listas desplegables dentro de ViniloSystem.</p>
+                    </div>
+                    <button onclick="window.print()" class="bg-brand-600 text-white text-xs font-bold px-3 py-2 rounded-xl">
+                        <i class="fa-solid fa-print mr-1"></i> Imprimir Manual
+                    </button>
+                </div>
+                
+                <div class="prose prose-sm max-w-none text-xs text-gray-700 space-y-4">
+                    <div class="bg-brand-50 p-4 rounded-xl border border-brand-100">
+                        <h4 class="font-bold text-brand-900 text-sm mb-1">1. Cotizador Rápido</h4>
+                        <p>Permite simular el costo directo, merma (+10%), mano de obra y precio de venta final en Pesos Chilenos (CLP) tanto para vinilos adhesivos, placas rígidas (PVC Espumado) como mercancías de venta directa.</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li><b>Vinilos Decorativos:</b> Calcula el uso de material según dimensiones en cm o mm, añadiendo capas adicionales y cobros de despeje.</li>
+                            <li><b>Sustrato Rígido + Vinilo:</b> Suma el costo de la plancha por m² y materiales indirectos (distanciadores, adhesivo de montaje).</li>
+                            <li><b>Merchandising / Venta Directa:</b> Muestra la fecha de última compra y costo unitario. Si no tiene movimientos en Kardex, indica <i>"No Comprado"</i>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-100">
+                        <h4 class="font-bold text-amber-900 text-sm mb-1">2. Inventario & Control de Kardex</h4>
+                        <p>El stock actual no es editable manualmente: se calcula sumando la totalidad de entradas menos las salidas registradas en la tabla de Kardex.</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li><b>Entradas:</b> Permiten ingresar metros lineales ($m$) indicando el ancho del rollo ($m$) para calcular los $m^2$ equivalentes.</li>
+                            <li><b>Salidas:</b> Se clasifican en <i>Consumo en Proyecto</i>, <i>Merma por Despape/Error</i>, <i>Consumo Interno</i> o <i>Venta Directa</i>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL FACTURA GASTO OPERATIVO -->
+        <div id="modal-gasto-general" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
-                    <h3 class="font-bold text-gray-900 text-sm">Formalizar y Crear Proyecto</h3>
+                    <h3 class="font-bold text-gray-900 text-sm">Ingresar Factura de Gasto Taller</h3>
                     <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form onsubmit="guardarProyectoDesdeCotizacion(event)" class="space-y-3 text-xs">
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Código Correlativo Único</label>
-                        <input type="text" id="pry-codigo-modal" readonly class="w-full p-2.5 bg-gray-100 border rounded-xl font-mono font-bold text-brand-600">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Nombre Descriptivo del Proyecto</label>
-                        <input type="text" id="pry-nombre-modal" required placeholder="Ej: Rotulación Vitrina Providencia - Verano" class="w-full p-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-brand-500 font-bold">
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="block font-semibold text-gray-700">Cliente Asignado</label>
-                            <button type="button" onclick="abrirModalCliente()" class="text-[10px] text-brand-600 hover:underline font-bold">+ Crear Cliente</button>
+                <form onsubmit="guardarGastoGeneral(event)" class="space-y-3 text-xs">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">N° Factura</label>
+                            <input type="text" id="gst-num-factura" required placeholder="F-10293" class="w-full p-2.5 border rounded-xl font-bold">
                         </div>
-                        <select id="pry-cliente-select" required class="w-full p-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-brand-500 bg-white font-semibold">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Fecha Emisión</label>
+                            <input type="date" id="gst-fecha" required class="w-full p-2.5 border rounded-xl font-bold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Proveedor / Emisor</label>
+                        <select id="gst-proveedor-select" required class="w-full p-2.5 border rounded-xl bg-white font-semibold">
                             <!-- JS Populate -->
                         </select>
                     </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition mt-2">Confirmar & Guardar Proyecto</button>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Concepto / Detalle Gasto</label>
+                        <input type="text" id="gst-concepto" required placeholder="Ej: Arriendo Taller, Electricidad, Insumos de Limpieza" class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Monto Neto ($ CLP)</label>
+                            <input type="number" id="gst-neto" min="0" required oninput="calcularIvaGastoModal()" class="w-full p-2.5 border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">IVA Crédito (19%)</label>
+                            <input type="number" id="gst-iva" readonly class="w-full p-2.5 bg-gray-100 border rounded-xl font-bold text-blue-700">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition mt-2">Guardar Factura Gasto</button>
                 </form>
             </div>
         </div>
@@ -977,7 +977,181 @@
         }
 
         function renderIVAMensual() {
-            // IVA calculations renderer wrapper
+            const tbody = document.getElementById('tabla-gastos-iva');
+            if (!tbody) return;
+
+            const mesFiltro = document.getElementById('iva-filtro-mes')?.value || '2026-03';
+            const gastos = (db.gastosGenerales || []).filter(g => (g.fecha || '').startsWith(mesFiltro));
+
+            let creditoTotal = 0;
+            gastos.forEach(g => creditoTotal += (g.iva || 0));
+
+            // Compras de inventario en Kardex también suman crédito
+            const comprasKardex = (db.kardex || []).filter(k => k.tipo === 'ENTRADA' && (k.fecha || '').startsWith(mesFiltro));
+            comprasKardex.forEach(k => {
+                creditoTotal += (k.total * 0.19);
+            });
+
+            // Débito fiscal ventas
+            const proyectosMes = (db.proyectos || []).filter(p => (p.fechaEmision || '').startsWith(mesFiltro));
+            let debitoTotal = 0;
+            proyectosMes.forEach(p => {
+                debitoTotal += ((p.ventaTotal / 1.19) * 0.19);
+            });
+
+            const elDebito = document.getElementById('iva-debito-monto');
+            const elCredito = document.getElementById('iva-credito-monto');
+            const elNeto = document.getElementById('iva-neto-monto');
+
+            if (elDebito) elDebito.innerText = formatearCLP(debitoTotal);
+            if (elCredito) elCredito.innerText = formatearCLP(creditoTotal);
+
+            const impuestoNeto = debitoTotal - creditoTotal;
+            if (elNeto) {
+                if (impuestoNeto > 0) {
+                    elNeto.innerText = formatearCLP(impuestoNeto);
+                    elNeto.className = "text-xl font-black text-rose-600";
+                } else {
+                    elNeto.innerText = `Remanente: ${formatearCLP(Math.abs(impuestoNeto))}`;
+                    elNeto.className = "text-xl font-black text-emerald-600";
+                }
+            }
+
+            tbody.innerHTML = gastos.map((g, idx) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3 text-gray-600">${g.fecha}</td>
+                    <td class="p-3 font-mono font-bold text-brand-600">${g.numFactura}</td>
+                    <td class="p-3 font-bold text-gray-900">${g.proveedor}</td>
+                    <td class="p-3 text-gray-700">${g.concepto}</td>
+                    <td class="p-3 text-right font-semibold">${formatearCLP(g.neto)}</td>
+                    <td class="p-3 text-right text-blue-600 font-bold">${formatearCLP(g.iva)}</td>
+                    <td class="p-3 text-right font-bold text-gray-900">${formatearCLP(g.neto + g.iva)}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="db.gastosGenerales.splice(${idx},1); guardarLocalStorage(); actualizarTodo();" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="8" class="p-4 text-center text-gray-400">Sin gastos ni facturas de compra registradas en este período.</td></tr>`;
+        }
+
+        function renderConsultas() {
+            const head = document.getElementById('head-tabla-reporte');
+            const tbody = document.getElementById('tabla-reporte');
+            const tipo = document.getElementById('rep-tipo-select')?.value || 'rentabilidad';
+
+            if (!tbody || !head) return;
+
+            let totalV = 0;
+            let totalC = 0;
+
+            (db.proyectos || []).forEach(p => {
+                totalV += (p.ventaTotal || 0);
+                totalC += (p.costoBase || 0);
+            });
+
+            const elVentas = document.getElementById('rep-total-ventas');
+            const elCostos = document.getElementById('rep-total-costos');
+            if (elVentas) elVentas.innerText = formatearCLP(totalV);
+            if (elCostos) elCostos.innerText = formatearCLP(totalC);
+
+            if (tipo === 'rentabilidad') {
+                head.innerHTML = `
+                    <tr>
+                        <th class="p-3 rounded-l-lg">Código / Proyecto</th>
+                        <th class="p-3">Cliente</th>
+                        <th class="p-3 text-right">Costo Base</th>
+                        <th class="p-3 text-right">Venta Final</th>
+                        <th class="p-3 text-right rounded-r-lg">Margen Bruto</th>
+                    </tr>
+                `;
+                tbody.innerHTML = (db.proyectos || []).map(p => {
+                    const margen = (p.ventaTotal / 1.19) - p.costoBase;
+                    return `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">${p.codigo} - ${p.nombreProyecto || ''}</td>
+                            <td class="p-3 text-gray-700">${p.cliente}</td>
+                            <td class="p-3 text-right font-mono">${formatearCLP(p.costoBase)}</td>
+                            <td class="p-3 text-right font-bold text-gray-900">${formatearCLP(p.ventaTotal)}</td>
+                            <td class="p-3 text-right font-bold ${margen >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${formatearCLP(margen)}</td>
+                        </tr>
+                    `;
+                }).join('') || `<tr><td colspan="5" class="p-4 text-center text-gray-400">Sin datos de proyectos.</td></tr>`;
+            } else if (tipo === 'ventas_cliente') {
+                head.innerHTML = `
+                    <tr>
+                        <th class="p-3 rounded-l-lg">RUT / Cliente</th>
+                        <th class="p-3 text-center">N° Proyectos</th>
+                        <th class="p-3 text-right rounded-r-lg">Total Comprado (CLP)</th>
+                    </tr>
+                `;
+                const resumenClientes = {};
+                (db.proyectos || []).forEach(p => {
+                    if (!resumenClientes[p.cliente]) resumenClientes[p.cliente] = { cant: 0, total: 0 };
+                    resumenClientes[p.cliente].cant += 1;
+                    resumenClientes[p.cliente].total += p.ventaTotal;
+                });
+
+                tbody.innerHTML = Object.keys(resumenClientes).map(cli => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 font-bold text-gray-900">${cli}</td>
+                        <td class="p-3 text-center font-bold text-brand-600">${resumenClientes[cli].cant}</td>
+                        <td class="p-3 text-right font-bold text-emerald-600">${formatearCLP(resumenClientes[cli].total)}</td>
+                    </tr>
+                `).join('') || `<tr><td colspan="3" class="p-4 text-center text-gray-400">Sin datos acumulados por cliente.</td></tr>`;
+            } else {
+                head.innerHTML = `
+                    <tr>
+                        <th class="p-3 rounded-l-lg">Insumo</th>
+                        <th class="p-3 text-center">Entradas Totales</th>
+                        <th class="p-3 text-center">Salidas Totales</th>
+                        <th class="p-3 text-right rounded-r-lg">Saldo Actual</th>
+                    </tr>
+                `;
+                tbody.innerHTML = (db.insumos || []).map(ins => {
+                    const ent = (db.kardex || []).filter(k => k.insumoCodigo === ins.codigo && k.tipo === 'ENTRADA').reduce((a, b) => a + b.cantidad, 0);
+                    const sal = (db.kardex || []).filter(k => k.insumoCodigo === ins.codigo && k.tipo === 'SALIDA').reduce((a, b) => a + b.cantidad, 0);
+                    return `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">${ins.nombre} (${ins.codigo})</td>
+                            <td class="p-3 text-center text-emerald-600 font-bold">${ent.toFixed(2)}</td>
+                            <td class="p-3 text-center text-rose-600 font-bold">${sal.toFixed(2)}</td>
+                            <td class="p-3 text-right font-bold text-gray-900">${(ent - sal).toFixed(2)}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function abrirModalGastoGeneral() {
+            const modal = document.getElementById('modal-gasto-general');
+            const selectProv = document.getElementById('gst-proveedor-select');
+            if (selectProv && db.proveedores) {
+                selectProv.innerHTML = db.proveedores.map(p => `<option value="${p.nombre}">${p.nombre} (${p.rut})</option>`).join('');
+            }
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function calcularIvaGastoModal() {
+            const neto = parseFloat(document.getElementById('gst-neto')?.value) || 0;
+            const inputIva = document.getElementById('gst-iva');
+            if (inputIva) inputIva.value = Math.round(neto * 0.19);
+        }
+
+        function guardarGastoGeneral(event) {
+            event.preventDefault();
+            const numFactura = document.getElementById('gst-num-factura')?.value;
+            const fecha = document.getElementById('gst-fecha')?.value;
+            const proveedor = document.getElementById('gst-proveedor-select')?.value;
+            const concepto = document.getElementById('gst-concepto')?.value;
+            const neto = parseFloat(document.getElementById('gst-neto')?.value) || 0;
+            const iva = Math.round(neto * 0.19);
+
+            if (!db.gastosGenerales) db.gastosGenerales = [];
+            db.gastosGenerales.push({ numFactura, fecha, proveedor, concepto, neto, iva });
+
+            guardarLocalStorage();
+            cerrarModales();
+            actualizarTodo();
+            mostrarToast("Factura Registrada", `Factura ${numFactura} agregada a gastos.`, "📄");
         }
 
         function exportarRespaldoJSON() {
