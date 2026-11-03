@@ -1,5 +1,9 @@
-<!-- ... existing code ... -->
-    <title>ViniloSystem - Vinilos Manager Chile v02.5</title>
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViniloSystem - Vinilos Manager Chile v02.6</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -68,33 +72,28 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-gray-900 text-base sm:text-lg tracking-tight flex items-center gap-2">
-                        ViniloSystem <span class="text-brand-600 text-[10px] uppercase font-bold px-2 py-0.5 bg-brand-50 rounded-full border border-brand-100">Chile v02.5</span>
+                        ViniloSystem <span class="text-brand-600 text-[10px] uppercase font-bold px-2 py-0.5 bg-brand-50 rounded-full border border-brand-100">Chile v02.6</span>
                     </h1>
-                    <p class="text-xs text-gray-500 hidden sm:block">Gestión Integral de Taller, Merchandising, Sustratos Rígidos e IVA SII</p>
+                    <p class="text-xs text-gray-500 hidden sm:block">Clientes, Cuentas por Cobrar, Facturación SII & Libro de Ventas</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <div id="cloud-status-badge" class="text-xs font-semibold bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full border border-blue-200 flex items-center gap-1.5">
-                    <span id="cloud-status-dot" class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                    <span id="cloud-status-text" class="hidden sm:inline">Cloud Sync: Local</span>
-                </div>
                 <button onclick="cargarDatosDemo()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold p-2 sm:px-3 sm:py-2 rounded-xl transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-database text-brand-600"></i>
                     <span class="hidden sm:inline">Cargar Demo</span>
+                </button>
+                <button onclick="inicializarDesdeCero()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-semibold p-2 sm:px-3 sm:py-2 rounded-xl transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span class="hidden sm:inline">Reset Cero</span>
                 </button>
                 <button onclick="exportarRespaldoJSON()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-semibold p-2 sm:px-3 sm:py-2 rounded-xl transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-download"></i>
                     <span class="hidden sm:inline">Respaldar</span>
                 </button>
-                <button onclick="document.getElementById('input-restaurar-json').click()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 font-semibold p-2 sm:px-3 sm:py-2 rounded-xl transition flex items-center space-x-1.5">
-                    <i class="fa-solid fa-upload"></i>
-                    <span class="hidden sm:inline">Restaurar</span>
-                </button>
                 <button onclick="abrirModalEmpresa()" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-semibold p-2 sm:px-3 sm:py-2 rounded-xl transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-building"></i>
                     <span class="hidden sm:inline">Mi Empresa</span>
                 </button>
-                <input type="file" id="input-restaurar-json" class="hidden" accept=".json" onchange="restaurarRespaldoJSON(event)">
             </div>
         </div>
     </header>
@@ -102,37 +101,19 @@
     <!-- Main Workspace -->
     <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col">
         
-        <!-- Navigation Selector Mobile & Tabs Desktop -->
-        <div class="sm:hidden mb-4">
-            <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Módulo Operativo:</label>
-            <select id="mobile-nav-select" onchange="switchTab(this.value)" class="w-full p-3 border-2 border-brand-500 rounded-xl font-bold text-brand-900 bg-white shadow-sm text-sm">
-                <option value="cotizador">⚡ Cotizador Rápido</option>
-                <option value="dashboard">📊 Dashboard Taller</option>
-                <option value="registros">📁 Proyectos & Pipeline</option>
-                <option value="archivos">👥 Archivos & Maestros</option>
-                <option value="kardex">📦 Movimientos & Kardex</option>
-                <option value="iva">📄 Control IVA & F29</option>
-                <option value="consultas">📈 Consultas & Reportes</option>
-                <option value="manual">📖 Manual de Usuario</option>
-            </select>
-        </div>
-
-        <nav class="hidden sm:flex space-x-1 sm:space-x-2 border-b border-gray-200 pb-4 overflow-x-auto scrollbar-none mb-6">
-            <button onclick="switchTab('cotizador')" id="tab-cotizador" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 bg-brand-600 text-white shadow-md shadow-brand-600/20 whitespace-nowrap">
+        <!-- Navigation Tabs -->
+        <nav class="flex space-x-1 sm:space-x-2 border-b border-gray-200 pb-4 overflow-x-auto scrollbar-none mb-6">
+            <button onclick="switchTab('archivos')" id="tab-archivos" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 bg-brand-600 text-white shadow-md shadow-brand-600/20 whitespace-nowrap">
+                <i class="fa-solid fa-address-book"></i>
+                <span>Archivos & Maestros</span>
+            </button>
+            <button onclick="switchTab('cotizador')" id="tab-cotizador" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
                 <i class="fa-solid fa-calculator text-accent-500"></i>
                 <span>Cotizador Rápido</span>
-            </button>
-            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>Dashboard</span>
             </button>
             <button onclick="switchTab('registros')" id="tab-registros" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
                 <i class="fa-solid fa-folder-open"></i>
                 <span>Proyectos & Pipeline</span>
-            </button>
-            <button onclick="switchTab('archivos')" id="tab-archivos" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
-                <i class="fa-solid fa-address-book"></i>
-                <span>Archivos & Maestros</span>
             </button>
             <button onclick="switchTab('kardex')" id="tab-kardex" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
                 <i class="fa-solid fa-boxes-stacked text-amber-500"></i>
@@ -142,354 +123,167 @@
                 <i class="fa-solid fa-file-invoice text-emerald-600"></i>
                 <span>Control IVA & F29</span>
             </button>
-            <button onclick="switchTab('consultas')" id="tab-consultas" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                <span>Consultas & Reportes</span>
-            </button>
             <button onclick="switchTab('manual')" id="tab-manual" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 text-gray-600 hover:bg-gray-100 whitespace-nowrap">
                 <i class="fa-solid fa-book-bookmark text-brand-600"></i>
                 <span>Manual de Usuario</span>
             </button>
         </nav>
 
-        <!-- ================= TAB 1: COTIZADOR RÁPIDO ================= -->
-        <div id="content-cotizador" class="tab-content active space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Formulario Cotizador (7 Cols) -->
-                <div class="lg:col-span-7 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
-                    <div class="flex justify-between items-center border-b border-gray-100 pb-4">
-                        <div>
-                            <h3 class="font-extrabold text-gray-900 text-base flex items-center gap-2">
-                                <i class="fa-solid fa-bolt text-amber-500"></i> Cotizador Rápido de Proyecto
-                            </h3>
-                            <p class="text-xs text-gray-500">Cálculo dinámico en tiempo real para Vinilos, Sustratos y Merchandising.</p>
-                        </div>
-                        <button type="button" onclick="resetCotizador()" class="text-xs text-gray-500 hover:text-brand-600 font-semibold transition flex items-center gap-1">
-                            <i class="fa-solid fa-rotate-left"></i> Limpiar
-                        </button>
-                    </div>
-
-                    <form id="form-cotizador" oninput="calcularCotizacion()" class="space-y-4 text-xs">
-                        <!-- Tipo de Proyecto General -->
-                        <div class="bg-gradient-to-r from-brand-50 to-indigo-50 p-4 rounded-xl border border-brand-200 space-y-3">
-                            <label class="block font-bold text-brand-900 uppercase tracking-wider text-[11px]">Tipo de Proyecto a Cotizar</label>
-                            <select id="cot-tipo-proyecto" onchange="toggleTipoProyecto(); calcularCotizacion();" class="w-full p-2.5 border-2 border-brand-500 rounded-xl font-bold bg-white text-brand-900 shadow-sm text-sm">
-                                <option value="vinilo_solo" selected>1. Vinilos Decorativos / Corte Adhesivo / Pavonados</option>
-                                <option value="sustrato_vinilo">2. Sustrato Rígido con Vinilo Aplicado / Corte de Plancha</option>
-                                <option value="merchandising">3. Merchandising / Artículos Registrados para Venta</option>
-                            </select>
-                        </div>
-
-                        <!-- PANEL 1: MERCHANDISING / ARTÍCULOS DE VENTA -->
-                        <div id="wrapper-cot-merchandising" class="hidden bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-3">
-                            <div class="flex justify-between items-center border-b border-emerald-200 pb-2">
-                                <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
-                                    <i class="fa-solid fa-box-open text-emerald-600"></i> Selección de Artículo de Merchandising
-                                </span>
-                                <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Venta Directa</span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block font-semibold text-emerald-900 text-[11px] mb-1">Artículo Registrado</label>
-                                    <select id="cot-merchandising-select" onchange="cargarInfoMerchandising(); calcularCotizacion();" class="w-full p-2.5 border border-emerald-300 rounded-xl font-semibold bg-white text-xs">
-                                        <!-- JS Populate -->
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-emerald-900 text-[11px] mb-1">Cantidad de Unidades</label>
-                                    <input type="number" id="cot-merchandising-cant" value="1" min="1" step="1" onchange="calcularCotizacion()" class="w-full p-2.5 border border-emerald-300 rounded-xl font-bold text-center bg-white text-emerald-900 text-xs">
-                                </div>
-                            </div>
-                            <!-- Ficha de Ultima Compra -->
-                            <div class="bg-white/80 p-3 rounded-lg border border-emerald-200 flex justify-between items-center text-xs">
-                                <div>
-                                    <span class="text-gray-500 block text-[10px]">Fecha Última Compra:</span>
-                                    <span id="merch-fecha-compra" class="font-bold text-emerald-900">No Comprado</span>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-gray-500 block text-[10px]">Último Costo de Compra:</span>
-                                    <span id="merch-ultimo-costo" class="font-bold text-emerald-700">No Comprado</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- PANEL 2: DIMENSIONES & PLACAS/VINILOS -->
-                        <div id="wrapper-cot-dimensiones" class="space-y-4">
-                            <!-- Medidas y Unidad -->
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-bold text-gray-800 uppercase tracking-wider text-[11px]">Dimensiones del Trabajo</span>
-                                    <div class="flex items-center space-x-2">
-                                        <label class="font-semibold text-gray-600">Unidad:</label>
-                                        <select id="cot-unidad" onchange="calcularCotizacion()" class="p-1.5 border border-gray-300 rounded-lg text-xs font-bold bg-white text-brand-700">
-                                            <option value="cm" selected>Centímetros (cm)</option>
-                                            <option value="mm">Milímetros (mm)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label id="lbl-cot-ancho" class="block font-semibold text-gray-700 mb-1">Ancho (cm)</label>
-                                        <input type="number" id="cot-ancho" value="150" min="1" step="0.1" required oninput="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl font-bold text-gray-900 outline-none focus:ring-2 focus:ring-brand-500">
-                                    </div>
-                                    <div>
-                                        <label id="lbl-cot-alto" class="block font-semibold text-gray-700 mb-1">Alto (cm)</label>
-                                        <input type="number" id="cot-alto" value="80" min="1" step="0.1" required oninput="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl font-bold text-gray-900 outline-none focus:ring-2 focus:ring-brand-500">
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center pt-1 text-gray-600 text-[11px]">
-                                    <span>Superficie Útil de Diseño:</span>
-                                    <span id="cot-lbl-area" class="font-black text-brand-600 text-xs">1.20 m²</span>
-                                </div>
-                            </div>
-
-                            <!-- Selector Sustrato Rígido (Si aplica) -->
-                            <div id="wrapper-pvc" class="hidden bg-blue-50 border border-blue-200 p-4 rounded-xl space-y-3">
-                                <div class="flex justify-between items-center border-b border-blue-200 pb-2">
-                                    <span class="font-bold text-blue-900 text-xs flex items-center gap-1.5">
-                                        <i class="fa-solid fa-layer-group text-blue-600"></i> Placa Rígida / Sustrato de Base
-                                    </span>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block font-semibold text-blue-900 text-[11px] mb-1">Sustrato Rígido</label>
-                                        <select id="cot-pvc-select" onchange="calcularCotizacion()" class="w-full p-2 border border-blue-300 rounded-xl font-semibold bg-white text-xs">
-                                            <!-- JS Populate -->
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block font-semibold text-blue-900 text-[11px] mb-1">Material Indirecto Aplicado</label>
-                                        <select id="cot-indirecto-select" onchange="calcularCotizacion()" class="w-full p-2 border border-blue-300 rounded-xl font-semibold bg-white text-xs">
-                                            <!-- JS Populate -->
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Selección de Película / Vinilo -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block font-semibold text-gray-700 mb-1">Vinilo / Película Adhesiva</label>
-                                    <select id="cot-vinilo-select" onchange="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl font-semibold bg-white outline-none focus:ring-2 focus:ring-brand-500">
-                                        <!-- JS Populate Exclusivo de Vinilos -->
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-gray-700 mb-1">Estructura de Color / Capas</label>
-                                    <select id="cot-modalidad-color" onchange="toggleMulticapa(); calcularCotizacion();" class="w-full p-2.5 border border-gray-300 rounded-xl font-semibold bg-white outline-none focus:ring-2 focus:ring-brand-500">
-                                        <option value="monocolor">Un solo color / Monocolor</option>
-                                        <option value="multicapa">Multicapa (Múltiples Colores Superpuestos)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Configuración Multicapa -->
-                            <div id="wrapper-multicapa" class="hidden bg-purple-50 border border-purple-200 p-3 rounded-xl space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <label class="font-bold text-purple-900 text-xs">Número de Capas / Colores de Vinilo:</label>
-                                    <input type="number" id="cot-num-capas" value="2" min="2" max="10" oninput="calcularCotizacion()" class="w-20 p-1.5 border border-purple-300 rounded-lg text-center font-bold bg-white text-purple-900">
-                                </div>
-                            </div>
-
-                            <!-- Transfer y Laminado -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                <div class="space-y-2">
-                                    <label class="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" id="cot-check-transfer" checked onchange="calcularCotizacion()" class="w-4 h-4 text-brand-600 rounded border-gray-300">
-                                        <span class="font-bold text-gray-800">Aplica Transfer Tape</span>
-                                    </label>
-                                    <select id="cot-transfer-select" onchange="calcularCotizacion()" class="w-full p-2 border border-gray-300 rounded-lg text-xs bg-white">
-                                        <!-- JS Populate -->
-                                    </select>
-                                </div>
-
-                                <div class="space-y-2">
-                                    <label class="flex items-center space-x-2 cursor-pointer">
-                                        <input type="checkbox" id="cot-check-laminado" onchange="calcularCotizacion()" class="w-4 h-4 text-brand-600 rounded border-gray-300">
-                                        <span class="font-bold text-gray-800">Aplica Laminado Protector (UV)</span>
-                                    </label>
-                                    <select id="cot-laminado-select" onchange="calcularCotizacion()" class="w-full p-2 border border-gray-300 rounded-lg text-xs bg-white">
-                                        <!-- JS Populate -->
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Selección de Tabla de Mano de Obra (Matriz Maestro) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block font-semibold text-gray-700 mb-1">Tarifa Mano de Obra Vinilos (Maestro)</label>
-                                    <select id="cot-mo-vinilo-select" onchange="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl font-semibold bg-white">
-                                        <!-- JS Populate desde Tabla Mano Obra -->
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-gray-700 mb-1">Tarifa Mano de Obra Sustratos (Maestro)</label>
-                                    <select id="cot-mo-sustrato-select" onchange="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl font-semibold bg-white">
-                                        <!-- JS Populate desde Tabla Mano Obra -->
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Factores de Margen e Impuesto -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Margen Utilidad Comercial (%)</label>
-                                <input type="number" id="cot-margen" value="50" min="0" step="5" oninput="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl font-bold text-center bg-white">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Tratamiento Tributario</label>
-                                <select id="cot-aplica-iva" onchange="calcularCotizacion()" class="w-full p-2.5 border border-gray-300 rounded-xl bg-white font-bold text-emerald-700">
-                                    <option value="1.19" selected>Venta Afecta a IVA (19%)</option>
-                                    <option value="1.0">Venta Exenta / Neto Sin IVA</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
+        <!-- ================= TAB: ARCHIVOS & MAESTROS ================= -->
+        <div id="content-archivos" class="tab-content active space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
+                
+                <!-- Sub-tabs -->
+                <div class="flex border-b border-gray-200 space-x-4 text-xs font-bold overflow-x-auto">
+                    <button id="subtab-clientes" onclick="switchArchivoTab('clientes')" class="pb-3 border-b-2 border-brand-600 text-brand-600 transition whitespace-nowrap">
+                        <i class="fa-solid fa-users mr-1"></i> 1. Clientes & Cuentas por Cobrar
+                    </button>
+                    <button id="subtab-insumos" onclick="switchArchivoTab('insumos')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
+                        <i class="fa-solid fa-boxes-packing mr-1"></i> Insumos & Catálogo
+                    </button>
+                    <button id="subtab-proveedores" onclick="switchArchivoTab('proveedores')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
+                        <i class="fa-solid fa-truck-field mr-1"></i> Proveedores
+                    </button>
+                    <button id="subtab-courriers" onclick="switchArchivoTab('courriers')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
+                        <i class="fa-solid fa-truck-fast mr-1"></i> Courriers
+                    </button>
                 </div>
 
-                <!-- Resumen Financiero y Merma (5 Cols) -->
-                <div class="lg:col-span-5 bg-gradient-to-br from-gray-900 to-brand-900 text-white rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-6">
-                    <div>
-                        <div class="flex justify-between items-center border-b border-gray-800 pb-3 mb-4">
-                            <h4 class="font-bold text-sm uppercase tracking-wider text-brand-100 flex items-center gap-2">
-                                <i class="fa-solid fa-receipt text-accent-500"></i> Desglose & Merma Estimada
-                            </h4>
-                            <span class="text-[10px] bg-brand-500/30 text-brand-100 px-2.5 py-0.5 rounded-full font-bold">CLP ($)</span>
-                        </div>
-
-                        <!-- Sección de Información de Merma Explícita -->
-                        <div id="box-info-merma" class="bg-gray-800/80 p-3.5 rounded-xl border border-gray-700 mb-4 space-y-1.5 text-xs">
-                            <span class="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider block border-b border-gray-700 pb-1">
-                                <i class="fa-solid fa-chart-pie text-amber-400 mr-1"></i> Información de Merma Técnica
-                            </span>
-                            <div class="flex justify-between text-gray-300">
-                                <span>Superficie Útil Proyecto:</span>
-                                <span id="res-merma-util" class="font-bold text-white">1.20 m²</span>
-                            </div>
-                            <div class="flex justify-between text-amber-300">
-                                <span>Merma Estimada Aplicada (+10%):</span>
-                                <span id="res-merma-cant" class="font-bold text-amber-300">0.12 m²</span>
-                            </div>
-                            <div class="flex justify-between text-gray-300 pt-1 border-t border-gray-700">
-                                <span>Total Insumo a Descontar Kardex:</span>
-                                <span id="res-merma-total" class="font-bold text-emerald-400">1.32 m²</span>
+                <!-- SUBTAB CLIENTES -->
+                <div id="arch-clientes-container" class="space-y-4">
+                    
+                    <!-- Barra de Herramientas de Clientes -->
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div class="flex items-center space-x-2 w-full lg:w-auto">
+                            <div class="relative flex-1 lg:w-72">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+                                <input type="text" id="cli-filtro-buscar" oninput="renderClientes()" placeholder="Filtrar por RUT, Nombre o Comuna..." class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-xl text-xs bg-white font-medium focus:ring-2 focus:ring-brand-500 outline-none">
                             </div>
                         </div>
 
-                        <div class="space-y-2.5 text-xs">
-                            <div id="row-res-pvc" class="flex justify-between text-gray-300 hidden">
-                                <span>Costo Placa PVC / Sustrato:</span>
-                                <span id="res-costo-pvc" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div id="row-res-indirecto" class="flex justify-between text-gray-300 hidden">
-                                <span>Materiales Indirectos:</span>
-                                <span id="res-costo-indirecto" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div id="row-res-vinilo" class="flex justify-between text-gray-300">
-                                <span>Costo Material Vinilo (con merma):</span>
-                                <span id="res-costo-vinilo" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div id="row-res-transfer" class="flex justify-between text-gray-300">
-                                <span>Costo Transfer Tape (con merma):</span>
-                                <span id="res-costo-transfer" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div id="row-res-laminado" class="flex justify-between text-gray-300">
-                                <span>Costo Laminado UV (con merma):</span>
-                                <span id="res-costo-laminado" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div id="row-res-merchandise" class="flex justify-between text-gray-300 hidden">
-                                <span>Costo Compra Merchandising:</span>
-                                <span id="res-costo-merchandising" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div class="flex justify-between text-gray-300">
-                                <span>Mano de Obra Aplicada:</span>
-                                <span id="res-costo-manoobra" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div class="border-t border-gray-800 pt-2 flex justify-between font-bold text-amber-400">
-                                <span>Costo Directo Base:</span>
-                                <span id="res-costo-total-base">$0 CLP</span>
-                            </div>
-                            <div class="flex justify-between text-gray-300 pt-2">
-                                <span>Subtotal Neto (+Margen):</span>
-                                <span id="res-subtotal-neto" class="font-bold text-white">$0 CLP</span>
-                            </div>
-                            <div class="flex justify-between text-emerald-400 font-semibold">
-                                <span>IVA Débito Fiscal (19%):</span>
-                                <span id="res-valor-iva">$0 CLP</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 space-y-3">
-                        <div class="flex justify-between items-baseline">
-                            <span class="text-xs font-bold uppercase text-brand-100">Precio Total Venta:</span>
-                            <span id="res-precio-final" class="text-2xl font-black text-emerald-400">$0 CLP</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button type="button" onclick="generarCotizacionClienteDesdeCotizador()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-2.5 px-3 rounded-xl transition text-xs flex items-center justify-center space-x-1 shadow-md">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <span>Ver Propuesta</span>
+                        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <button onclick="abrirModalCliente()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>+ Nuevo Cliente</span>
                             </button>
-                            <button type="button" onclick="convertirEnProyectoModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-extrabold py-2.5 px-3 rounded-xl transition text-xs flex items-center justify-center space-x-1 shadow-md">
-                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                                <span>Crear Proyecto</span>
+                            <button onclick="abrirModalCotizacionStandar()" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-signature"></i>
+                                <span>Cotización Estándar</span>
+                            </button>
+                            <button onclick="abrirModalEmisionFactura()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                                <span>Factura / Boleta SII</span>
+                            </button>
+                            <button onclick="abrirModalNotaCreditoDebito()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-receipt"></i>
+                                <span>Nota Crédito / Débito</span>
+                            </button>
+                            <button onclick="abrirCartolaCuentaCorriente()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                                <span>Cuentas por Cobrar</span>
                             </button>
                         </div>
                     </div>
+
+                    <!-- Tabla de Clientes (RUT, NOMBRE / RAZÓN SOC, TELÉFONO, CORREO) -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
+                                <tr>
+                                    <th class="p-3 rounded-l-lg">RUT</th>
+                                    <th class="p-3">NOMBRE / RAZÓN SOCIAL</th>
+                                    <th class="p-3">TELÉFONO</th>
+                                    <th class="p-3">CORREO</th>
+                                    <th class="p-3">COMUNA / DIRECCIÓN</th>
+                                    <th class="p-3 text-right">SALDO CTA CTE</th>
+                                    <th class="p-3 text-right rounded-r-lg">ACCIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-clientes" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- SUBTABS SECUNDARIOS -->
+                <div id="arch-insumos-container" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-500 font-medium">Catálogo de Insumos & Productos.</span>
+                        <button onclick="abrirModalInsumo()" class="bg-brand-600 text-white px-3 py-2 rounded-xl text-xs font-bold">+ Nuevo Insumo</button>
+                    </div>
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-3">SKU</th>
+                                <th class="p-3">DESCRIPCIÓN</th>
+                                <th class="p-3">CATEGORÍA</th>
+                                <th class="p-3">COSTO UNIT.</th>
+                                <th class="p-3 text-right">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-insumos" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+
+                <div id="arch-proveedores-container" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-500 font-medium">Maestro de Proveedores.</span>
+                        <button onclick="abrirModalProveedor()" class="bg-brand-600 text-white px-3 py-2 rounded-xl text-xs font-bold">+ Nuevo Proveedor</button>
+                    </div>
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-3">RUT</th>
+                                <th class="p-3">RAZÓN SOCIAL</th>
+                                <th class="p-3">CONTACTO</th>
+                                <th class="p-3 text-right">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-proveedores" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+
+                <div id="arch-courriers-container" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-500 font-medium">Empresas de Courrier.</span>
+                        <button onclick="abrirModalCourrier()" class="bg-brand-600 text-white px-3 py-2 rounded-xl text-xs font-bold">+ Nuevo Courrier</button>
+                    </div>
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-3">CÓDIGO</th>
+                                <th class="p-3">NOMBRE COURRIER</th>
+                                <th class="p-3">CONTACTO</th>
+                                <th class="p-3 text-right">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-courriers" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
 
-        <!-- ================= TAB 3: PROYECTOS & PIPELINE ================= -->
+        <!-- ================= TAB: COTIZADOR RÁPIDO ================= -->
+        <div id="content-cotizador" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-gray-900 text-base">Calculadora de Cotizaciones Rápida</h3>
+                <p class="text-xs text-gray-500">Genera cálculos directos para entregar propuestas a clientes.</p>
+            </div>
+        </div>
+
+        <!-- ================= TAB: PROYECTOS & PIPELINE ================= -->
         <div id="content-registros" class="tab-content space-y-6">
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-folder-open text-brand-600"></i> Registro Histórico de Proyectos
-                        </h3>
-                        <p class="text-xs text-gray-500">Consulta por Correlativo, Nombre, Cliente y herramientas de depuración de proyectos antiguos.</p>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button onclick="depurarProyectosAntiguos()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs px-3 py-2 rounded-xl font-bold transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-broom"></i> Depurar Antiguos
-                        </button>
-                        <button onclick="switchTab('cotizador')" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-md">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Nuevo Proyecto</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Buscador de Proyectos -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
-                    <input type="text" id="pry-filtro-buscar" oninput="renderProyectos()" placeholder="Buscar por Nombre, Código o Cliente..." class="p-2 border border-gray-300 rounded-lg text-xs font-medium">
-                    <select id="pry-filtro-estado" onchange="renderProyectos()" class="p-2 border border-gray-300 rounded-lg text-xs font-semibold bg-white">
-                        <option value="todos">Todos los Estados</option>
-                        <option value="Cotizado">Cotizado / Prospecto</option>
-                        <option value="Aprobado">Aprobado</option>
-                        <option value="Fabricación">En Taller / Fabricación</option>
-                        <option value="Completado">Despachado / Entregado</option>
-                    </select>
-                    <div class="text-right flex items-center justify-end text-xs font-bold text-gray-600">
-                        Total Proyectos: <span id="lbl-total-proyectos-num" class="ml-1 text-brand-600">0</span>
-                    </div>
-                </div>
-
+                <h3 class="font-bold text-gray-900 text-base">Pipeline de Fabricación</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
-                        <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <th class="p-3 rounded-l-lg">Código</th>
-                                <th class="p-3">Nombre Proyecto</th>
-                                <th class="p-3">Cliente</th>
-                                <th class="p-3">Tipo / Sustrato</th>
-                                <th class="p-3">Estado</th>
-                                <th class="p-3">Costo Base</th>
-                                <th class="p-3">Venta Total</th>
-                                <th class="p-3 text-center">Fichas</th>
-                                <th class="p-3 text-right rounded-r-lg">Acción</th>
+                                <th class="p-3">CÓDIGO</th>
+                                <th class="p-3">PROYECTO</th>
+                                <th class="p-3">CLIENTE</th>
+                                <th class="p-3">ESTADO</th>
+                                <th class="p-3 text-right">TOTAL VENTA</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-proyectos" class="divide-y divide-gray-100"></tbody>
@@ -498,343 +292,277 @@
             </div>
         </div>
 
-        <!-- ================= TAB 4: ARCHIVOS & MAESTROS ================= -->
-        <div id="content-archivos" class="tab-content space-y-6">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
-                
-                <!-- Sub-tabs para Archivos -->
-                <div class="flex border-b border-gray-200 space-x-4 text-xs font-bold overflow-x-auto">
-                    <button id="subtab-clientes" onclick="switchArchivoTab('clientes')" class="pb-3 border-b-2 border-brand-600 text-brand-600 transition whitespace-nowrap">
-                        <i class="fa-solid fa-users mr-1"></i> Clientes
-                    </button>
-                    <button id="subtab-insumos" onclick="switchArchivoTab('insumos')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
-                        <i class="fa-solid fa-boxes-packing mr-1"></i> Insumos & Merchandising
-                    </button>
-                    <button id="subtab-proveedores" onclick="switchArchivoTab('proveedores')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
-                        <i class="fa-solid fa-truck-field mr-1"></i> Proveedores
-                    </button>
-                    <button id="subtab-courriers" onclick="switchArchivoTab('courriers')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
-                        <i class="fa-solid fa-truck-fast mr-1"></i> Empresas Courrier
-                    </button>
-                    <button id="subtab-manoobra" onclick="switchArchivoTab('manoobra')" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition whitespace-nowrap">
-                        <i class="fa-solid fa-hand-holding-dollar mr-1"></i> Tarifas Mano de Obra
-                    </button>
-                </div>
-
-                <!-- 1. Clientes -->
-                <div id="arch-clientes-container" class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-500 font-medium">Ficha de clientes con datos de envío y courriers preferidos.</span>
-                        <button onclick="abrirModalCliente()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Nuevo Cliente</span>
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
-                                <tr>
-                                    <th class="p-3 rounded-l-lg">RUT</th>
-                                    <th class="p-3">Nombre / Razón Social</th>
-                                    <th class="p-3">Comuna / Ciudad</th>
-                                    <th class="p-3">Contacto / Tel</th>
-                                    <th class="p-3">Entrega / Courrier</th>
-                                    <th class="p-3 text-right rounded-r-lg">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-clientes" class="divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 2. Insumos -->
-                <div id="arch-insumos-container" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-500 font-medium">Catálogo unificado de Vinilos, Sustratos, Indirectos y Merchandising.</span>
-                        <div class="flex space-x-2">
-                            <button onclick="abrirModalMovimiento()" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                                <i class="fa-solid fa-arrow-transfer-xmark"></i>
-                                <span>Entrada/Salida Kardex</span>
-                            </button>
-                            <button onclick="abrirModalInsumo()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                                <i class="fa-solid fa-plus"></i>
-                                <span>Nuevo Item / Insumo</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
-                                <tr>
-                                    <th class="p-3 rounded-l-lg">SKU Interno</th>
-                                    <th class="p-3">SKU Proveedor</th>
-                                    <th class="p-3">Descripción Insumo</th>
-                                    <th class="p-3">Categoría</th>
-                                    <th class="p-3">Stock Calc. (Kardex)</th>
-                                    <th class="p-3">Última Compra</th>
-        <!-- ================= TAB 6: CONTROL IVA & F29 ================= -->
-        <div id="content-iva" class="tab-content space-y-6">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-file-invoice text-emerald-600"></i> Control Fiscal de IVA & Declaración F29
-                        </h3>
-                        <p class="text-xs text-gray-500">Monitoreo mensual de Débito Fiscal (Ventas) vs. Crédito Fiscal (Compras y Gastos).</p>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <select id="iva-filtro-mes" onchange="renderIVAMensual()" class="p-2 border border-gray-300 rounded-xl text-xs font-bold bg-white text-gray-800">
-                            <option value="2026-03" selected>Marzo 2026</option>
-                            <option value="2026-02">Febrero 2026</option>
-                            <option value="2026-01">Enero 2026</option>
-                        </select>
-                        <button onclick="abrirModalGastoGeneral()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-md">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>+ Factura Gasto Taller</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tarjetas de Resumen Fiscal -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-1">
-                        <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">IVA Débito Fiscal (Ventas)</span>
-                        <span id="iva-debito-monto" class="text-xl font-black text-emerald-700">$0 CLP</span>
-                        <span class="text-[10px] text-emerald-600 block">Generado en ventas afectas 19%</span>
-                    </div>
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl space-y-1">
-                        <span class="text-[10px] font-bold text-blue-800 uppercase tracking-wider block">IVA Crédito Fiscal (Compras/Gastos)</span>
-                        <span id="iva-credito-monto" class="text-xl font-black text-blue-700">$0 CLP</span>
-                        <span class="text-[10px] text-blue-600 block">Facturas de insumos y servicios</span>
-                    </div>
-                    <div id="box-f29-resultado" class="bg-purple-50 border border-purple-200 p-4 rounded-xl space-y-1">
-                        <span id="f29-titulo-resultado" class="text-[10px] font-bold text-purple-800 uppercase tracking-wider block">Impuesto Neto a Pagar F29</span>
-                        <span id="iva-neto-monto" class="text-xl font-black text-purple-700">$0 CLP</span>
-                        <span id="f29-sub-resultado" class="text-[10px] text-purple-600 block">Estimado a declarar en SII</span>
-                    </div>
-                </div>
-
-                <!-- Tabla de Registro de Gastos y Compras -->
-                <div class="space-y-3">
-                    <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-receipt text-gray-600"></i> Registro de Facturas de Compras y Gastos Operativos
-                    </h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
-                                <tr>
-                                    <th class="p-3 rounded-l-lg">Fecha</th>
-                                    <th class="p-3">N° Factura</th>
-                                    <th class="p-3">Proveedor / Emisor</th>
-                                    <th class="p-3">Detalle / Concepto</th>
-                                    <th class="p-3 text-right">Monto Neto</th>
-                                    <th class="p-3 text-right">IVA (19%)</th>
-                                    <th class="p-3 text-right">Total Bruto</th>
-                                    <th class="p-3 text-right rounded-r-lg">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-gastos-iva" class="divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 7: CONSULTAS & REPORTES ================= -->
-        <div id="content-consultas" class="tab-content space-y-6">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-brand-600"></i> Consultas & Reportes del Taller
-                        </h3>
-                        <p class="text-xs text-gray-500">Métricas de rentabilidad, ventas por cliente e insumos de mayor rotación.</p>
-                    </div>
-                    <select id="rep-tipo-select" onchange="renderConsultas()" class="p-2 border border-gray-300 rounded-xl text-xs font-bold bg-white text-brand-900">
-                        <option value="rentabilidad" selected>Reporte 1: Rentabilidad por Proyecto</option>
-                        <option value="ventas_cliente">Reporte 2: Total Ventas por Cliente</option>
-                        <option value="rotacion_insumos">Reporte 3: Consumo & Rotación de Insumos</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-gray-500 block">Total Facturado en Proyectos:</span>
-                            <span id="rep-total-ventas" class="text-xl font-bold text-gray-900">$0 CLP</span>
-                        </div>
-                        <i class="fa-solid fa-sack-dollar text-3xl text-emerald-500/40"></i>
-                    </div>
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-gray-500 block">Costo Total de Producción:</span>
-                            <span id="rep-total-costos" class="text-xl font-bold text-gray-900">$0 CLP</span>
-                        </div>
-                        <i class="fa-solid fa-coins text-3xl text-amber-500/40"></i>
-                    </div>
-                </div>
-
+        <!-- ================= TAB: MOVIMIENTOS & KARDEX ================= -->
+        <div id="content-kardex" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-gray-900 text-base">Control de Kardex</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
-                        <thead id="head-tabla-reporte" class="bg-gray-50 text-gray-600 uppercase font-medium">
-                            <!-- JS Populate Head -->
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-3">FECHA</th>
+                                <th class="p-3">INSUMO</th>
+                                <th class="p-3">TIPO</th>
+                                <th class="p-3">CANTIDAD</th>
+                                <th class="p-3 text-right">ACCIONES</th>
+                            </tr>
                         </thead>
-                        <tbody id="tabla-reporte" class="divide-y divide-gray-100"></tbody>
+                        <tbody id="tabla-kardex" class="divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 8: MANUAL DE USUARIO ================= -->
+        <!-- ================= TAB: CONTROL IVA & F29 ================= -->
+        <div id="content-iva" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-gray-900 text-base">Resumen IVA Mensual</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                        <span class="text-xs text-emerald-700 font-bold">Débito Fiscal:</span>
+                        <div id="iva-debito-monto" class="text-xl font-bold text-emerald-800">$0 CLP</div>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                        <span class="text-xs text-blue-700 font-bold">Crédito Fiscal:</span>
+                        <div id="iva-credito-monto" class="text-xl font-bold text-blue-800">$0 CLP</div>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
+                        <span class="text-xs text-purple-700 font-bold">Impuesto Estimado:</span>
+                        <div id="iva-neto-monto" class="text-xl font-bold text-purple-800">$0 CLP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: MANUAL DE USUARIO ================= -->
         <div id="content-manual" class="tab-content space-y-6">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
-                <div class="flex justify-between items-center border-b border-gray-100 pb-4">
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-book-bookmark text-brand-600"></i> Manual de Usuario & Guía Operativa Taller
-                        </h3>
-                        <p class="text-xs text-gray-500">Documentación de opciones y listas desplegables dentro de ViniloSystem.</p>
-                    </div>
-                    <button onclick="window.print()" class="bg-brand-600 text-white text-xs font-bold px-3 py-2 rounded-xl">
-                        <i class="fa-solid fa-print mr-1"></i> Imprimir Manual
-                    </button>
-                </div>
-                
-                <div class="prose prose-sm max-w-none text-xs text-gray-700 space-y-4">
-                    <div class="bg-brand-50 p-4 rounded-xl border border-brand-100">
-                        <h4 class="font-bold text-brand-900 text-sm mb-1">1. Cotizador Rápido</h4>
-                        <p>Permite simular el costo directo, merma (+10%), mano de obra y precio de venta final en Pesos Chilenos (CLP) tanto para vinilos adhesivos, placas rígidas (PVC Espumado) como mercancías de venta directa.</p>
-                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                            <li><b>Vinilos Decorativos:</b> Calcula el uso de material según dimensiones en cm o mm, añadiendo capas adicionales y cobros de despeje.</li>
-                            <li><b>Sustrato Rígido + Vinilo:</b> Suma el costo de la plancha por m² y materiales indirectos (distanciadores, adhesivo de montaje).</li>
-                            <li><b>Merchandising / Venta Directa:</b> Muestra la fecha de última compra y costo unitario. Si no tiene movimientos en Kardex, indica <i>"No Comprado"</i>.</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-100">
-                        <h4 class="font-bold text-amber-900 text-sm mb-1">2. Inventario & Control de Kardex</h4>
-                        <p>El stock actual no es editable manualmente: se calcula sumando la totalidad de entradas menos las salidas registradas en la tabla de Kardex.</p>
-                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                            <li><b>Entradas:</b> Permiten ingresar metros lineales ($m$) indicando el ancho del rollo ($m$) para calcular los $m^2$ equivalentes.</li>
-                            <li><b>Salidas:</b> Se clasifican en <i>Consumo en Proyecto</i>, <i>Merma por Despape/Error</i>, <i>Consumo Interno</i> o <i>Venta Directa</i>.</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-gray-900 text-base">Manual de Operación ViniloSystem</h3>
+                <p class="text-xs text-gray-600">Guía del usuario para la administración de clientes, cuentas corrientes e inventarios.</p>
             </div>
         </div>
 
-        <!-- MODAL FACTURA GASTO OPERATIVO -->
-        <div id="modal-gasto-general" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex justify-between items-center border-b pb-3">
-                    <h3 class="font-bold text-gray-900 text-sm">Ingresar Factura de Gasto Taller</h3>
-                    <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <form onsubmit="guardarGastoGeneral(event)" class="space-y-3 text-xs">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">N° Factura</label>
-                            <input type="text" id="gst-num-factura" required placeholder="F-10293" class="w-full p-2.5 border rounded-xl font-bold">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">Fecha Emisión</label>
-                            <input type="date" id="gst-fecha" required class="w-full p-2.5 border rounded-xl font-bold">
-                        </div>
+    </div>
+
+    <!-- MODAL CLIENTE -->
+    <div id="modal-cliente" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-gray-900 text-sm">Ficha de Cliente</h3>
+                <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="guardarClienteFormulario(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="cli-index-edit" value="-1">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">RUT Cliente</label>
+                        <input type="text" id="cli-rut" required placeholder="77.123.456-7" class="w-full p-2.5 border rounded-xl font-bold">
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Proveedor / Emisor</label>
-                        <select id="gst-proveedor-select" required class="w-full p-2.5 border rounded-xl bg-white font-semibold">
-                            <!-- JS Populate -->
+                        <label class="block font-semibold text-gray-700 mb-1">Tipo Cliente</label>
+                        <select id="cli-tipo" class="w-full p-2.5 border rounded-xl font-semibold bg-white">
+                            <option value="Empresa / Persona Jurídica">Empresa / Persona Jurídica</option>
+                            <option value="Particular / Persona Natural">Particular / Persona Natural</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Nombre / Razón Social</label>
+                    <input type="text" id="cli-nombre" required placeholder="Comercial Providencia SpA" class="w-full p-2.5 border rounded-xl font-bold">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Teléfono</label>
+                        <input type="text" id="cli-telefono" placeholder="+56 9 9123 4567" class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Correo Electrónico</label>
+                        <input type="email" id="cli-correo" placeholder="contacto@empresa.cl" class="w-full p-2.5 border rounded-xl">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Calle / Dirección</label>
+                        <input type="text" id="cli-calle" placeholder="Av. Providencia 1234" class="w-full p-2 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Comuna</label>
+                        <input type="text" id="cli-comuna" placeholder="Providencia" class="w-full p-2 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Ciudad</label>
+                        <input type="text" id="cli-ciudad" placeholder="Santiago" class="w-full p-2 border rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Preferencia de Entrega / Courrier</label>
+                    <select id="cli-entrega" class="w-full p-2.5 border rounded-xl font-semibold bg-white">
+                        <option value="Entrega Directa Empresa">Entrega Directa Empresa</option>
+                        <option value="Starken">Starken</option>
+                        <option value="Chilexpress">Chilexpress</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl transition mt-2">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CARTOLA DE CUENTA CORRIENTE -->
+    <div id="modal-cartola-cuenta" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-gray-900 text-sm">Cartola de Cuenta Corriente (Cuentas por Cobrar)</h3>
+                <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-200">
+                <select id="cartola-cliente-select" onchange="renderCartolaCuentaCorriente()" class="p-2 border rounded-xl text-xs font-bold bg-white text-gray-800">
+                    <!-- JS populate -->
+                </select>
+                <div class="text-right">
+                    <span class="text-[10px] uppercase font-bold text-gray-500 block">Saldo Pendiente por Cobrar</span>
+                    <span id="cartola-saldo-total" class="text-lg font-black text-rose-600">$0 CLP</span>
+                </div>
+            </div>
+
+            <!-- Tabla de Cartola -->
+            <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-gray-100 font-bold text-gray-700">
+                        <tr>
+                            <th class="p-2.5">FECHA</th>
+                            <th class="p-2.5">DOCUMENTO</th>
+                            <th class="p-2.5">FOLIO</th>
+                            <th class="p-2.5 text-right">CARGO (+DEUDA)</th>
+                            <th class="p-2.5 text-right">ABONO (-PAGO)</th>
+                            <th class="p-2.5 text-right">SALDO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cartola-body" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+
+            <!-- Registrar Abono -->
+            <form onsubmit="registrarAbonoCliente(event)" class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+                <input type="text" id="abono-concepto" placeholder="Ej: Transferencia Banco Chile / Efectivo" required class="flex-1 p-2 border rounded-lg text-xs">
+                <input type="number" id="abono-monto" placeholder="Monto Abono $ CLP" required class="w-36 p-2 border rounded-lg text-xs font-bold">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg">Registrar Abono</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL COTIZACIÓN ESTÁNDAR (SIN AFECTAR STOCK) -->
+    <div id="modal-cotizacion-standar" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-gray-900 text-sm">Cotización Estándar Membretada (Pro-Forma)</h3>
+                <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="generarCotizacionEstandarSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Cliente</label>
+                    <select id="cot-est-cliente" class="w-full p-2.5 border rounded-xl font-bold bg-white"></select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Detalle del Proyecto</label>
+                    <textarea id="cot-est-detalle" required rows="3" placeholder="Descripción detallada de la cotización pro-forma..." class="w-full p-2.5 border rounded-xl"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Monto Neto ($ CLP)</label>
+                        <input type="number" id="cot-est-neto" oninput="calcularTotalesCotEst()" required class="w-full p-2.5 border rounded-xl font-bold">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Total Bruto (19% IVA)</label>
+                        <input type="number" id="cot-est-total" readonly class="w-full p-2.5 bg-gray-100 border rounded-xl font-bold text-amber-700">
+                    </div>
+                </div>
+                <p class="text-[10px] text-amber-600 font-bold">* No afecta existencias de inventario.</p>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl transition">Generar Documento Imprimible</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EMISIÓN FACTURA / BOLETA SII (AFECTA STOCK Y CTA CTE) -->
+    <div id="modal-emision-factura" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-gray-900 text-sm">Emisión de Boleta o Factura SII</h3>
+                <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="emitirFacturaSubmit(event)" class="space-y-3 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Tipo Documento</label>
+                        <select id="sii-doc-tipo" class="w-full p-2.5 border rounded-xl font-bold bg-white">
+                            <option value="Factura Electrónica">Factura Electrónica</option>
+                            <option value="Boleta Electrónica">Boleta Electrónica</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Concepto / Detalle Gasto</label>
-                        <input type="text" id="gst-concepto" required placeholder="Ej: Arriendo Taller, Electricidad, Insumos de Limpieza" class="w-full p-2.5 border rounded-xl">
+                        <label class="block font-semibold text-gray-700 mb-1">N° Folio SII</label>
+                        <input type="text" id="sii-doc-folio" required placeholder="F-1002" class="w-full p-2.5 border rounded-xl font-bold">
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">Monto Neto ($ CLP)</label>
-                            <input type="number" id="gst-neto" min="0" required oninput="calcularIvaGastoModal()" class="w-full p-2.5 border rounded-xl font-bold">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">IVA Crédito (19%)</label>
-                            <input type="number" id="gst-iva" readonly class="w-full p-2.5 bg-gray-100 border rounded-xl font-bold text-blue-700">
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition mt-2">Guardar Factura Gasto</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- MODAL KARDEX TRANSACCIÓN (Con Conversión Metros Lineales a m²) -->
-        <div id="modal-movimiento" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-                <div class="flex justify-between items-center border-b pb-3">
-                    <h3 id="modal-movimiento-titulo" class="font-bold text-gray-900 text-sm">Transacción de Entrada / Salida Kardex</h3>
-                    <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form onsubmit="guardarMovimientoInventario(event)" class="space-y-3 text-xs">
-                    <input type="hidden" id="mov-index-edit" value="-1">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Cliente</label>
+                    <select id="sii-doc-cliente" class="w-full p-2.5 border rounded-xl font-bold bg-white"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Insumo / Artículo</label>
-                        <select id="mov-insumo-select" required onchange="actualizarUnidadesModalKardex()" class="w-full p-2.5 border rounded-xl bg-white font-bold">
-                            <!-- JS Populate -->
+                        <label class="block font-semibold text-gray-700 mb-1">Insumo a Descontar</label>
+                        <select id="sii-doc-insumo" class="w-full p-2.5 border rounded-xl font-bold bg-white"></select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Cantidad (m² / Unid)</label>
+                        <input type="number" id="sii-doc-cant-descuento" min="0.1" step="0.1" required placeholder="5.0" class="w-full p-2.5 border rounded-xl font-bold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Monto Neto Venta ($ CLP)</label>
+                    <input type="number" id="sii-doc-neto" oninput="calcularTotalesSiiDoc()" required class="w-full p-2.5 border rounded-xl font-bold">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition">Emitir Factura / Descontar Stock</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL NOTA DE CRÉDITO / DÉBITO -->
+    <div id="modal-nota-credito-debito" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-gray-900 text-sm">Emisión Nota de Crédito / Débito</h3>
+                <button onclick="cerrarModales()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="emitirNotaSubmit(event)" class="space-y-3 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Tipo Nota</label>
+                        <select id="nota-tipo" class="w-full p-2.5 border rounded-xl font-bold bg-white">
+                            <option value="Nota de Crédito">Nota de Crédito (Disminuye Deuda)</option>
+                            <option value="Nota de Débito">Nota de Débito (Aumenta Deuda)</option>
                         </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">Tipo Transacción</label>
-                            <select id="mov-tipo-select" onchange="actualizarUnidadesModalKardex()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-gray-900">
-                                <option value="ENTRADA">ENTRADA (Compra/Recepción)</option>
-                                <option value="SALIDA">SALIDA (Consumo/Merma/Venta)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">Concepto / Motivo</label>
-                            <select id="mov-concepto-select" class="w-full p-2.5 border rounded-xl font-semibold bg-white">
-                                <option value="Compra a Proveedor">Compra a Proveedor</option>
-                                <option value="Consumo en Proyecto">Consumo en Proyecto</option>
-                                <option value="Merma por Despape / Error">Merma por Despape / Error</option>
-                                <option value="Consumo Interno Taller">Consumo Interno Taller</option>
-                                <option value="Venta Directa Merchandising">Venta Directa Merchandising</option>
-                            </select>
-                        </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">N° Folio Nota</label>
+                        <input type="text" id="nota-folio" required placeholder="NC-55" class="w-full p-2.5 border rounded-xl font-bold">
                     </div>
-
-                    <!-- Bloque de Conversión de Metros Lineales a m² para Vinilos -->
-                    <div id="wrapper-kardex-conversion-m" class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
-                        <span class="font-bold text-amber-900 text-[11px] block">Calculadora de Compra por Metros Lineales ($m$)</span>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-[10px] font-semibold text-amber-800">Metros Lineales Comprados</label>
-                                <input type="number" id="mov-ml-comprados" value="50" min="0.1" step="0.5" oninput="calcularM2Referenciales()" class="w-full p-2 border rounded-lg bg-white font-bold text-xs text-amber-900">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-semibold text-amber-800">Ancho del Rollo (m)</label>
-                                <input type="number" id="mov-ancho-rollo" value="0.61" step="0.01" oninput="calcularM2Referenciales()" class="w-full p-2 border rounded-lg bg-white font-bold text-xs text-amber-900">
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center text-[11px] text-amber-900 font-bold pt-1">
-                            <span>Equivalente en Superficie:</span>
-                            <span id="lbl-m2-referenciales" class="text-brand-600 text-xs">30.50 m²</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label id="lbl-mov-cant" class="block font-semibold text-gray-700 mb-1">Cantidad (m² / Unid)</label>
-                            <input type="number" id="mov-cantidad" min="0.1" step="0.1" required placeholder="30.5" class="w-full p-2.5 border rounded-xl font-bold">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">Costo Unit. Compra ($ CLP)</label>
-                            <input type="number" id="mov-costo-unitario" min="0" required placeholder="2800" class="w-full p-2.5 border rounded-xl font-bold">
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl transition mt-2">Registrar Transacción</button>
-                </form>
-            </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Cliente</label>
+                    <select id="nota-cliente" class="w-full p-2.5 border rounded-xl font-bold bg-white"></select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Motivo / Concepto</label>
+                    <input type="text" id="nota-motivo" required placeholder="Ej: Devolución de producto / Anulación Factura" class="w-full p-2.5 border rounded-xl">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Monto Total Nota ($ CLP)</label>
+                    <input type="number" id="nota-monto" required class="w-full p-2.5 border rounded-xl font-bold">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition">Aplicar Nota en Cuenta Corriente</button>
+            </form>
         </div>
-
     </div>
 
     <!-- JavaScript Execution Block -->
@@ -842,17 +570,15 @@
         let db = {
             empresa: {},
             clientes: [],
+            cuentasCorrientes: [],
             proveedores: [],
             courriers: [],
-            manoObraVinilos: [],
-            manoObraSustratos: [],
             insumos: [],
             proyectos: [],
             kardex: [],
             gastosGenerales: []
         };
 
-        // --- STORAGE & TOAST HELPERS ---
         function guardarLocalStorage() {
             try {
                 localStorage.setItem('vinilosystem_db', JSON.stringify(db));
@@ -914,13 +640,10 @@
                 targetBtn.classList.remove('text-gray-600', 'hover:bg-gray-100');
                 targetBtn.classList.add('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-600/20');
             }
-
-            const mobileNav = document.getElementById('mobile-nav-select');
-            if (mobileNav) mobileNav.value = tabId;
         }
 
         function switchArchivoTab(subTabId) {
-            ['clientes', 'insumos', 'proveedores', 'courriers', 'manoobra'].forEach(sub => {
+            ['clientes', 'insumos', 'proveedores', 'courriers'].forEach(sub => {
                 const btn = document.getElementById(`subtab-${sub}`);
                 const container = document.getElementById(`arch-${sub}-container`);
                 if (btn) {
@@ -943,972 +666,373 @@
             return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(monto || 0);
         }
 
-        // --- DASHBOARD, KARDEX & IVA PLACEHOLDER RENDERERS ---
-        function actualizarDashboard() {
-            // Dashboard refresh metrics if elements exist
-        }
-
-        function renderKardex() {
-            const tbody = document.getElementById('tabla-kardex');
+        // --- CLIENTES & CUENTAS POR COBRAR HANDLERS ---
+        function renderClientes() {
+            const tbody = document.getElementById('tabla-clientes');
             if (!tbody) return;
 
-            const filtroInsumo = document.getElementById('kardex-filtro-insumo')?.value || 'todos';
-            const filtroTipo = document.getElementById('kardex-filtro-tipo')?.value || 'todos';
+            const filtro = (document.getElementById('cli-filtro-buscar')?.value || '').toLowerCase();
+            let lista = db.clientes || [];
 
-            let lista = db.kardex || [];
-            if (filtroInsumo !== 'todos') lista = lista.filter(k => k.insumoCodigo === filtroInsumo);
-            if (filtroTipo !== 'todos') lista = lista.filter(k => k.tipo === filtroTipo);
-
-            tbody.innerHTML = lista.map((k, idx) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 font-medium text-gray-600">${k.fecha}</td>
-                    <td class="p-3 font-bold text-gray-900">${k.insumoCodigo}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${k.tipo === 'ENTRADA' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${k.tipo}</span></td>
-                    <td class="p-3 text-gray-700">${k.concepto}</td>
-                    <td class="p-3 text-center font-bold text-gray-800">${k.cantidad}</td>
-                    <td class="p-3 text-right font-mono text-gray-700">${(k.cantidad).toFixed(2)} m²</td>
-                    <td class="p-3 text-right font-semibold">${formatearCLP(k.costoUnitario)}</td>
-                    <td class="p-3 text-right font-bold text-gray-900">${formatearCLP(k.total)}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="eliminarMovimientoKardex(${idx})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('') || `<tr><td colspan="9" class="p-4 text-center text-gray-400">Sin movimientos registrados.</td></tr>`;
-        }
-
-        function renderIVAMensual() {
-            const tbody = document.getElementById('tabla-gastos-iva');
-            if (!tbody) return;
-
-            const mesFiltro = document.getElementById('iva-filtro-mes')?.value || '2026-03';
-            const gastos = (db.gastosGenerales || []).filter(g => (g.fecha || '').startsWith(mesFiltro));
-
-            let creditoTotal = 0;
-            gastos.forEach(g => creditoTotal += (g.iva || 0));
-
-            // Compras de inventario en Kardex también suman crédito
-            const comprasKardex = (db.kardex || []).filter(k => k.tipo === 'ENTRADA' && (k.fecha || '').startsWith(mesFiltro));
-            comprasKardex.forEach(k => {
-                creditoTotal += (k.total * 0.19);
-            });
-
-            // Débito fiscal ventas
-            const proyectosMes = (db.proyectos || []).filter(p => (p.fechaEmision || '').startsWith(mesFiltro));
-            let debitoTotal = 0;
-            proyectosMes.forEach(p => {
-                debitoTotal += ((p.ventaTotal / 1.19) * 0.19);
-            });
-
-            const elDebito = document.getElementById('iva-debito-monto');
-            const elCredito = document.getElementById('iva-credito-monto');
-            const elNeto = document.getElementById('iva-neto-monto');
-
-            if (elDebito) elDebito.innerText = formatearCLP(debitoTotal);
-            if (elCredito) elCredito.innerText = formatearCLP(creditoTotal);
-
-            const impuestoNeto = debitoTotal - creditoTotal;
-            if (elNeto) {
-                if (impuestoNeto > 0) {
-                    elNeto.innerText = formatearCLP(impuestoNeto);
-                    elNeto.className = "text-xl font-black text-rose-600";
-                } else {
-                    elNeto.innerText = `Remanente: ${formatearCLP(Math.abs(impuestoNeto))}`;
-                    elNeto.className = "text-xl font-black text-emerald-600";
-                }
+            if (filtro) {
+                lista = lista.filter(c => 
+                    (c.rut || '').toLowerCase().includes(filtro) ||
+                    (c.nombre || '').toLowerCase().includes(filtro) ||
+                    (c.comuna || '').toLowerCase().includes(filtro)
+                );
             }
 
-            tbody.innerHTML = gastos.map((g, idx) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 text-gray-600">${g.fecha}</td>
-                    <td class="p-3 font-mono font-bold text-brand-600">${g.numFactura}</td>
-                    <td class="p-3 font-bold text-gray-900">${g.proveedor}</td>
-                    <td class="p-3 text-gray-700">${g.concepto}</td>
-                    <td class="p-3 text-right font-semibold">${formatearCLP(g.neto)}</td>
-                    <td class="p-3 text-right text-blue-600 font-bold">${formatearCLP(g.iva)}</td>
-                    <td class="p-3 text-right font-bold text-gray-900">${formatearCLP(g.neto + g.iva)}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="db.gastosGenerales.splice(${idx},1); guardarLocalStorage(); actualizarTodo();" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('') || `<tr><td colspan="8" class="p-4 text-center text-gray-400">Sin gastos ni facturas de compra registradas en este período.</td></tr>`;
-        }
+            tbody.innerHTML = lista.map((c) => {
+                const movimientos = (db.cuentasCorrientes || []).filter(cc => cc.rutCliente === c.rut);
+                const saldo = movimientos.reduce((acc, m) => acc + (m.cargo || 0) - (m.abono || 0), 0);
 
-        function renderConsultas() {
-            const head = document.getElementById('head-tabla-reporte');
-            const tbody = document.getElementById('tabla-reporte');
-            const tipo = document.getElementById('rep-tipo-select')?.value || 'rentabilidad';
-
-            if (!tbody || !head) return;
-
-            let totalV = 0;
-            let totalC = 0;
-
-            (db.proyectos || []).forEach(p => {
-                totalV += (p.ventaTotal || 0);
-                totalC += (p.costoBase || 0);
-            });
-
-            const elVentas = document.getElementById('rep-total-ventas');
-            const elCostos = document.getElementById('rep-total-costos');
-            if (elVentas) elVentas.innerText = formatearCLP(totalV);
-            if (elCostos) elCostos.innerText = formatearCLP(totalC);
-
-            if (tipo === 'rentabilidad') {
-                head.innerHTML = `
-                    <tr>
-                        <th class="p-3 rounded-l-lg">Código / Proyecto</th>
-                        <th class="p-3">Cliente</th>
-                        <th class="p-3 text-right">Costo Base</th>
-                        <th class="p-3 text-right">Venta Final</th>
-                        <th class="p-3 text-right rounded-r-lg">Margen Bruto</th>
-                    </tr>
-                `;
-                tbody.innerHTML = (db.proyectos || []).map(p => {
-                    const margen = (p.ventaTotal / 1.19) - p.costoBase;
-                    return `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3 font-bold text-gray-900">${p.codigo} - ${p.nombreProyecto || ''}</td>
-                            <td class="p-3 text-gray-700">${p.cliente}</td>
-                            <td class="p-3 text-right font-mono">${formatearCLP(p.costoBase)}</td>
-                            <td class="p-3 text-right font-bold text-gray-900">${formatearCLP(p.ventaTotal)}</td>
-                            <td class="p-3 text-right font-bold ${margen >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${formatearCLP(margen)}</td>
-                        </tr>
-                    `;
-                }).join('') || `<tr><td colspan="5" class="p-4 text-center text-gray-400">Sin datos de proyectos.</td></tr>`;
-            } else if (tipo === 'ventas_cliente') {
-                head.innerHTML = `
-                    <tr>
-                        <th class="p-3 rounded-l-lg">RUT / Cliente</th>
-                        <th class="p-3 text-center">N° Proyectos</th>
-                        <th class="p-3 text-right rounded-r-lg">Total Comprado (CLP)</th>
-                    </tr>
-                `;
-                const resumenClientes = {};
-                (db.proyectos || []).forEach(p => {
-                    if (!resumenClientes[p.cliente]) resumenClientes[p.cliente] = { cant: 0, total: 0 };
-                    resumenClientes[p.cliente].cant += 1;
-                    resumenClientes[p.cliente].total += p.ventaTotal;
-                });
-
-                tbody.innerHTML = Object.keys(resumenClientes).map(cli => `
+                return `
                     <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-gray-900">${cli}</td>
-                        <td class="p-3 text-center font-bold text-brand-600">${resumenClientes[cli].cant}</td>
-                        <td class="p-3 text-right font-bold text-emerald-600">${formatearCLP(resumenClientes[cli].total)}</td>
-                    </tr>
-                `).join('') || `<tr><td colspan="3" class="p-4 text-center text-gray-400">Sin datos acumulados por cliente.</td></tr>`;
-            } else {
-                head.innerHTML = `
-                    <tr>
-                        <th class="p-3 rounded-l-lg">Insumo</th>
-                        <th class="p-3 text-center">Entradas Totales</th>
-                        <th class="p-3 text-center">Salidas Totales</th>
-                        <th class="p-3 text-right rounded-r-lg">Saldo Actual</th>
+                        <td class="p-3 font-mono font-bold text-brand-600">${c.rut}</td>
+                        <td class="p-3 font-bold text-gray-900">${c.nombre}</td>
+                        <td class="p-3 text-gray-700">${c.telefono || '-'}</td>
+                        <td class="p-3 text-gray-700">${c.correo || '-'}</td>
+                        <td class="p-3 text-gray-600">${c.comuna || 'Santiago'}, ${c.calle || ''}</td>
+                        <td class="p-3 text-right font-black ${saldo > 0 ? 'text-rose-600' : 'text-emerald-600'}">${formatearCLP(saldo)}</td>
+                        <td class="p-3 text-right space-x-1">
+                            <button onclick="editarClienteModal('${c.rut}')" class="text-brand-600 hover:text-brand-800" title="Editar Ficha"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminarCliente('${c.rut}')" class="text-rose-500 hover:text-rose-700" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        </td>
                     </tr>
                 `;
-                tbody.innerHTML = (db.insumos || []).map(ins => {
-                    const ent = (db.kardex || []).filter(k => k.insumoCodigo === ins.codigo && k.tipo === 'ENTRADA').reduce((a, b) => a + b.cantidad, 0);
-                    const sal = (db.kardex || []).filter(k => k.insumoCodigo === ins.codigo && k.tipo === 'SALIDA').reduce((a, b) => a + b.cantidad, 0);
-                    return `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3 font-bold text-gray-900">${ins.nombre} (${ins.codigo})</td>
-                            <td class="p-3 text-center text-emerald-600 font-bold">${ent.toFixed(2)}</td>
-                            <td class="p-3 text-center text-rose-600 font-bold">${sal.toFixed(2)}</td>
-                            <td class="p-3 text-right font-bold text-gray-900">${(ent - sal).toFixed(2)}</td>
-                        </tr>
-                    `;
-                }).join('');
-            }
+            }).join('') || `<tr><td colspan="7" class="p-4 text-center text-gray-400">Sin clientes registrados.</td></tr>`;
         }
 
-        function abrirModalGastoGeneral() {
-            const modal = document.getElementById('modal-gasto-general');
-            const selectProv = document.getElementById('gst-proveedor-select');
-            if (selectProv && db.proveedores) {
-                selectProv.innerHTML = db.proveedores.map(p => `<option value="${p.nombre}">${p.nombre} (${p.rut})</option>`).join('');
-            }
+        function abrirModalCliente() {
+            document.getElementById('cli-index-edit').value = "-1";
+            document.getElementById('cli-rut').value = "";
+            document.getElementById('cli-nombre').value = "";
+            document.getElementById('cli-telefono').value = "";
+            document.getElementById('cli-correo').value = "";
+            document.getElementById('cli-calle').value = "";
+            document.getElementById('cli-comuna').value = "";
+            document.getElementById('cli-ciudad').value = "";
+
+            const modal = document.getElementById('modal-cliente');
             if (modal) modal.classList.remove('hidden');
         }
 
-        function calcularIvaGastoModal() {
-            const neto = parseFloat(document.getElementById('gst-neto')?.value) || 0;
-            const inputIva = document.getElementById('gst-iva');
-            if (inputIva) inputIva.value = Math.round(neto * 0.19);
+        function editarClienteModal(rut) {
+            const c = (db.clientes || []).find(cli => cli.rut === rut);
+            if (!c) return;
+
+            document.getElementById('cli-index-edit').value = rut;
+            document.getElementById('cli-rut').value = c.rut;
+            document.getElementById('cli-tipo').value = c.tipo || 'Empresa / Persona Jurídica';
+            document.getElementById('cli-nombre').value = c.nombre;
+            document.getElementById('cli-telefono').value = c.telefono || '';
+            document.getElementById('cli-correo').value = c.correo || '';
+            document.getElementById('cli-calle').value = c.calle || '';
+            document.getElementById('cli-comuna').value = c.comuna || '';
+            document.getElementById('cli-ciudad').value = c.ciudad || '';
+            document.getElementById('cli-entrega').value = c.courrier || 'Entrega Directa Empresa';
+
+            const modal = document.getElementById('modal-cliente');
+            if (modal) modal.classList.remove('hidden');
         }
 
-        function guardarGastoGeneral(event) {
+        function guardarClienteFormulario(event) {
             event.preventDefault();
-            const numFactura = document.getElementById('gst-num-factura')?.value;
-            const fecha = document.getElementById('gst-fecha')?.value;
-            const proveedor = document.getElementById('gst-proveedor-select')?.value;
-            const concepto = document.getElementById('gst-concepto')?.value;
-            const neto = parseFloat(document.getElementById('gst-neto')?.value) || 0;
-            const iva = Math.round(neto * 0.19);
+            const idEdit = document.getElementById('cli-index-edit').value;
+            const rut = document.getElementById('cli-rut').value.trim();
+            const tipo = document.getElementById('cli-tipo').value;
+            const nombre = document.getElementById('cli-nombre').value.trim();
+            const telefono = document.getElementById('cli-telefono').value.trim();
+            const correo = document.getElementById('cli-correo').value.trim();
+            const calle = document.getElementById('cli-calle').value.trim();
+            const comuna = document.getElementById('cli-comuna').value.trim();
+            const ciudad = document.getElementById('cli-ciudad').value.trim();
+            const courrier = document.getElementById('cli-entrega').value;
 
-            if (!db.gastosGenerales) db.gastosGenerales = [];
-            db.gastosGenerales.push({ numFactura, fecha, proveedor, concepto, neto, iva });
+            if (!db.clientes) db.clientes = [];
+
+            if (idEdit === "-1") {
+                db.clientes.push({ rut, tipo, nombre, telefono, correo, calle, comuna, ciudad, courrier });
+            } else {
+                const idx = db.clientes.findIndex(c => c.rut === idEdit);
+                if (idx !== -1) {
+                    db.clientes[idx] = { rut, tipo, nombre, telefono, correo, calle, comuna, ciudad, courrier };
+                }
+            }
 
             guardarLocalStorage();
             cerrarModales();
             actualizarTodo();
-            mostrarToast("Factura Registrada", `Factura ${numFactura} agregada a gastos.`, "📄");
+            mostrarToast("Cliente Guardado", `${nombre} guardado correctamente.`, "👤");
+        }
+
+        function eliminarCliente(rut) {
+            if (confirm(`¿Desea eliminar el cliente ${rut}?`)) {
+                db.clientes = (db.clientes || []).filter(c => c.rut !== rut);
+                guardarLocalStorage();
+                actualizarTodo();
+                mostrarToast("Cliente Eliminado", "Ficha removida.", "🗑️");
+            }
+        }
+
+        function abrirCartolaCuentaCorriente() {
+            const modal = document.getElementById('modal-cartola-cuenta');
+            const select = document.getElementById('cartola-cliente-select');
+            if (select && db.clientes) {
+                select.innerHTML = db.clientes.map(c => `<option value="${c.rut}">${c.nombre} (${c.rut})</option>`).join('');
+            }
+            renderCartolaCuentaCorriente();
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function renderCartolaCuentaCorriente() {
+            const select = document.getElementById('cartola-cliente-select');
+            const rut = select?.value;
+            const tbody = document.getElementById('tabla-cartola-body');
+            const lblSaldo = document.getElementById('cartola-saldo-total');
+
+            if (!tbody || !rut) return;
+
+            const movimientos = (db.cuentasCorrientes || []).filter(m => m.rutCliente === rut);
+            let saldoAcumulado = 0;
+
+            tbody.innerHTML = movimientos.map(m => {
+                saldoAcumulado += (m.cargo || 0) - (m.abono || 0);
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-2.5 text-gray-600">${m.fecha}</td>
+                        <td class="p-2.5 font-bold text-gray-800">${m.documento}</td>
+                        <td class="p-2.5 font-mono text-brand-600">${m.folio}</td>
+                        <td class="p-2.5 text-right font-bold text-rose-600">${m.cargo ? formatearCLP(m.cargo) : '-'}</td>
+                        <td class="p-2.5 text-right font-bold text-emerald-600">${m.abono ? formatearCLP(m.abono) : '-'}</td>
+                        <td class="p-2.5 text-right font-black text-gray-900">${formatearCLP(saldoAcumulado)}</td>
+                    </tr>
+                `;
+            }).join('') || `<tr><td colspan="6" class="p-4 text-center text-gray-400">Sin movimientos para este cliente.</td></tr>`;
+
+            if (lblSaldo) lblSaldo.innerText = formatearCLP(saldoAcumulado);
+        }
+
+        function registrarAbonoCliente(event) {
+            event.preventDefault();
+            const rut = document.getElementById('cartola-cliente-select')?.value;
+            const concepto = document.getElementById('abono-concepto')?.value;
+            const monto = parseFloat(document.getElementById('abono-monto')?.value) || 0;
+
+            if (!rut || monto <= 0) return;
+
+            if (!db.cuentasCorrientes) db.cuentasCorrientes = [];
+            db.cuentasCorrientes.push({
+                rutCliente: rut,
+                fecha: new Date().toISOString().split('T')[0],
+                documento: 'Abono / Pago Recibido',
+                folio: `PAG-${Math.floor(100 + Math.random() * 900)}`,
+                cargo: 0,
+                abono: monto,
+                motivo: concepto
+            });
+
+            guardarLocalStorage();
+            renderCartolaCuentaCorriente();
+            renderClientes();
+            document.getElementById('abono-concepto').value = '';
+            document.getElementById('abono-monto').value = '';
+            mostrarToast("Abono Registrado", `Abono de ${formatearCLP(monto)} registrado.`, "💳");
+        }
+
+        function abrirModalCotizacionStandar() {
+            const modal = document.getElementById('modal-cotizacion-standar');
+            const select = document.getElementById('cot-est-cliente');
+            if (select && db.clientes) {
+                select.innerHTML = db.clientes.map(c => `<option value="${c.rut}">${c.nombre} (${c.rut})</option>`).join('');
+            }
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function calcularTotalesCotEst() {
+            const neto = parseFloat(document.getElementById('cot-est-neto')?.value) || 0;
+            const inputTotal = document.getElementById('cot-est-total');
+            if (inputTotal) inputTotal.value = Math.round(neto * 1.19);
+        }
+
+        function generarCotizacionEstandarSubmit(event) {
+            event.preventDefault();
+            alert("Generando Cotización Estándar Membretada.");
+            cerrarModales();
+            window.print();
+        }
+
+        function abrirModalEmisionFactura() {
+            const modal = document.getElementById('modal-emision-factura');
+            const selectCli = document.getElementById('sii-doc-cliente');
+            const selectIns = document.getElementById('sii-doc-insumo');
+
+            if (selectCli && db.clientes) {
+                selectCli.innerHTML = db.clientes.map(c => `<option value="${c.rut}">${c.nombre} (${c.rut})</option>`).join('');
+            }
+            if (selectIns && db.insumos) {
+                selectIns.innerHTML = db.insumos.map(i => `<option value="${i.codigo}">${i.nombre} (${i.codigo})</option>`).join('');
+            }
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function calcularTotalesSiiDoc() {
+            const neto = parseFloat(document.getElementById('sii-doc-neto')?.value) || 0;
+            const inputTotal = document.getElementById('sii-doc-total');
+            if (inputTotal) inputTotal.value = Math.round(neto * 1.19);
+        }
+
+        function emitirFacturaSubmit(event) {
+            event.preventDefault();
+            const tipoDoc = document.getElementById('sii-doc-tipo')?.value;
+            const folio = document.getElementById('sii-doc-folio')?.value;
+            const rutCli = document.getElementById('sii-doc-cliente')?.value;
+            const skuInsumo = document.getElementById('sii-doc-insumo')?.value;
+            const cantDescuento = parseFloat(document.getElementById('sii-doc-cant-descuento')?.value) || 0;
+            const neto = parseFloat(document.getElementById('sii-doc-neto')?.value) || 0;
+            const totalBruto = Math.round(neto * 1.19);
+
+            // Descontar inventario
+            if (!db.kardex) db.kardex = [];
+            db.kardex.push({
+                fecha: new Date().toISOString().split('T')[0],
+                insumoCodigo: skuInsumo,
+                tipo: 'SALIDA',
+                concepto: `Emisión ${tipoDoc} N° ${folio}`,
+                cantidad: cantDescuento,
+                costoUnitario: 0,
+                total: 0
+            });
+
+            // Cargo a Cuenta Corriente
+            if (!db.cuentasCorrientes) db.cuentasCorrientes = [];
+            db.cuentasCorrientes.push({
+                rutCliente: rutCli,
+                fecha: new Date().toISOString().split('T')[0],
+                documento: tipoDoc,
+                folio: folio,
+                cargo: totalBruto,
+                abono: 0
+            });
+
+            guardarLocalStorage();
+            cerrarModales();
+            actualizarTodo();
+            mostrarToast("Documento Emitido", `${tipoDoc} N° ${folio} emitida.`, "📄");
+        }
+
+        function abrirModalNotaCreditoDebito() {
+            const modal = document.getElementById('modal-nota-credito-debito');
+            const selectCli = document.getElementById('nota-cliente');
+            if (selectCli && db.clientes) {
+                selectCli.innerHTML = db.clientes.map(c => `<option value="${c.rut}">${c.nombre} (${c.rut})</option>`).join('');
+            }
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function emitirNotaSubmit(event) {
+            event.preventDefault();
+            const tipoNota = document.getElementById('nota-tipo')?.value;
+            const folio = document.getElementById('nota-folio')?.value;
+            const rutCli = document.getElementById('nota-cliente')?.value;
+            const motivo = document.getElementById('nota-motivo')?.value;
+            const monto = parseFloat(document.getElementById('nota-monto')?.value) || 0;
+
+            if (!db.cuentasCorrientes) db.cuentasCorrientes = [];
+
+            if (tipoNota === 'Nota de Crédito') {
+                db.cuentasCorrientes.push({
+                    rutCliente: rutCli,
+                    fecha: new Date().toISOString().split('T')[0],
+                    documento: `Nota de Crédito (${motivo})`,
+                    folio: folio,
+                    cargo: 0,
+                    abono: monto
+                });
+            } else {
+                db.cuentasCorrientes.push({
+                    rutCliente: rutCli,
+                    fecha: new Date().toISOString().split('T')[0],
+                    documento: `Nota de Débito (${motivo})`,
+                    folio: folio,
+                    cargo: monto,
+                    abono: 0
+                });
+            }
+
+            guardarLocalStorage();
+            cerrarModales();
+            actualizarTodo();
+            mostrarToast("Nota Aplicada", `${tipoNota} N° ${folio} procesada.`, "📋");
+        }
+
+        function inicializarDesdeCero() {
+            if (confirm("¿Borrar todos los datos y reiniciar la aplicación desde cero?")) {
+                db = {
+                    empresa: {},
+                    clientes: [],
+                    cuentasCorrientes: [],
+                    proveedores: [],
+                    courriers: [],
+                    insumos: [],
+                    proyectos: [],
+                    kardex: [],
+                    gastosGenerales: []
+                };
+                guardarLocalStorage();
+                actualizarTodo();
+                mostrarToast("Sistema Reiniciado", "Base de datos limpia desde cero.", "🧹");
+            }
+        }
+
+        function renderArchivos() {
+            renderClientes();
+        }
+
+        function actualizarTodo() {
+            renderArchivos();
+        }
+
+        function cargarDatosDemo() {
+            db = {
+                empresa: { nombre: "Vinilos Chile Ltda.", rut: "76.458.920-K" },
+                clientes: [
+                    { rut: "77.123.456-7", tipo: "Empresa / Persona Jurídica", nombre: "Comercial Providencia SpA", telefono: "+56 9 9123 4567", correo: "contacto@providencia.cl", calle: "Av. Providencia 1234", comuna: "Providencia", ciudad: "Santiago", courrier: "Starken" }
+                ],
+                cuentasCorrientes: [
+                    { rutCliente: "77.123.456-7", fecha: "2026-03-01", documento: "Factura Electrónica", folio: "F-1001", cargo: 53550, abono: 0 }
+                ],
+                insumos: [
+                    { codigo: "VIN-MON-BLA", nombre: "Vinilo Monomérico Blanco", costo: 2200 }
+                ]
+            };
+            guardarLocalStorage();
+            actualizarTodo();
+            mostrarToast("Demo Cargado", "Datos de prueba listos.", "🚀");
+        }
+
+        function abrirModalEmpresa() {
+            const nom = prompt("Nombre Empresa:", db.empresa?.nombre || "Vinilos Chile Ltda.");
+            if (nom) {
+                if (!db.empresa) db.empresa = {};
+                db.empresa.nombre = nom;
+                guardarLocalStorage();
+            }
         }
 
         function exportarRespaldoJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `Respaldos_ViniloSystem_${new Date().toISOString().split('T')[0]}.json`);
+            downloadAnchor.setAttribute("download", `Respaldos_ViniloSystem.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-            mostrarToast("Respaldo Generado", "Copia JSON descargada correctamente.", "📦");
-        }
-
-        function restaurarRespaldoJSON(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (parsed && typeof parsed === 'object') {
-                        db = parsed;
-                        guardarLocalStorage();
-                        actualizarTodo();
-                        mostrarToast("Restauración Exitosa", "Base de datos restaurada correctamente.", "✅");
-                    }
-                } catch (err) {
-                    mostrarToast("Error de Archivo", "El archivo JSON no es válido.", "⚠️");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function abrirModalEmpresa() {
-            const nombre = prompt("Nombre Razón Social Empresa:", db.empresa?.nombre || "Relievestudio Ltda.");
-            if (nombre !== null) {
-                if (!db.empresa) db.empresa = {};
-                db.empresa.nombre = nombre;
-                guardarLocalStorage();
-                mostrarToast("Empresa Actualizada", "Datos guardados en configuración.", "🏢");
-            }
-        }
-
-        function abrirModalMovimiento() {
-            const modal = document.getElementById('modal-movimiento');
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function abrirModalInsumo() {
-            const cod = prompt("Código SKU Insumo:");
-            const nom = prompt("Nombre Insumo:");
-            const cat = prompt("Categoría (Vinilo Monomérico, Placa PVC / Rígido, Merchandising, etc.):");
-            const costo = parseFloat(prompt("Costo por unit/m² CLP:")) || 0;
-
-            if (cod && nom) {
-                if (!db.insumos) db.insumos = [];
-                db.insumos.push({ codigo: cod, skuProveedor: cod, nombre: nom, categoria: cat || 'Vinilo Monomérico', costo: costo, ultimaCompraFecha: new Date().toISOString().split('T')[0] });
-                guardarLocalStorage();
-                actualizarTodo();
-                mostrarToast("Insumo Registrado", `${nom} añadido al catálogo.`, "📦");
-            }
-        }
-
-        function abrirModalCliente() {
-            const rut = prompt("RUT Cliente:");
-            const nom = prompt("Nombre / Razón Social:");
-            if (rut && nom) {
-                if (!db.clientes) db.clientes = [];
-                db.clientes.push({ rut, nombre: nom, comuna: 'Santiago', ciudad: 'Santiago', contacto: '+56 9 0000 0000', courrier: 'Starken' });
-                guardarLocalStorage();
-                actualizarTodo();
-                mostrarToast("Cliente Guardado", `${nom} ingresado.`, "👤");
-            }
-        }
-
-        function abrirModalProveedor() {
-            const rut = prompt("RUT Proveedor:");
-            const nom = prompt("Nombre Razón Social Proveedor:");
-            if (rut && nom) {
-                if (!db.proveedores) db.proveedores = [];
-                db.proveedores.push({ rut, nombre: nom, comuna: 'Santiago', ciudad: 'Santiago', contacto: 'ventas@proveedor.cl', web: 'www.proveedor.cl' });
-                guardarLocalStorage();
-                actualizarTodo();
-                mostrarToast("Proveedor Guardado", `${nom} ingresado.`, "🚚");
-            }
-        }
-
-        function abrirModalCourrier() {
-            const cod = prompt("Código Courrier (ej. STK):");
-            const nom = prompt("Nombre Empresa Courrier:");
-            if (cod && nom) {
-                if (!db.courriers) db.courriers = [];
-                db.courriers.push({ codigo: cod, nombre: nom, contacto: '600 000 0000', web: 'www.courrier.cl' });
-                guardarLocalStorage();
-                actualizarTodo();
-                mostrarToast("Courrier Guardado", `${nom} ingresado.`, "📦");
-            }
-        }
-
-        function abrirModalManoObra() {
-            const nom = prompt("Nombre Tipo Mano Obra:");
-            const base = parseFloat(prompt("Costo Base m² CLP:")) || 3000;
-            const factor = parseFloat(prompt("Factor Multiplicador:")) || 1.0;
-            if (nom) {
-                if (!db.manoObraVinilos) db.manoObraVinilos = [];
-                db.manoObraVinilos.push({ codigo: `MO-${Date.now()}`, nombre: nom, costoBaseM2: base, factor: factor });
-                guardarLocalStorage();
-                actualizarTodo();
-                mostrarToast("Tarifa Creada", `${nom} agregada a la matriz.`, "💵");
-            }
-        }
-
-        function eliminarInsumo(codigo) {
-            if (confirm(`¿Eliminar insumo ${codigo}?`)) {
-                db.insumos = (db.insumos || []).filter(i => i.codigo !== codigo);
-                guardarLocalStorage();
-                actualizarTodo();
-            }
-        }
-
-        function eliminarProyecto(idx) {
-            if (confirm("¿Eliminar este proyecto?")) {
-                db.proyectos.splice(idx, 1);
-                guardarLocalStorage();
-                actualizarTodo();
-            }
-        }
-
-        function eliminarMovimientoKardex(idx) {
-            if (confirm("¿Anular este movimiento de Kardex?")) {
-                db.kardex.splice(idx, 1);
-                guardarLocalStorage();
-                actualizarTodo();
-            }
-        }
-
-        function eliminarMOVini(idx) {
-            db.manoObraVinilos.splice(idx, 1);
-            guardarLocalStorage();
-            actualizarTodo();
-        }
-
-        function eliminarMOSus(idx) {
-            db.manoObraSustratos.splice(idx, 1);
-            guardarLocalStorage();
-            actualizarTodo();
-        }
-
-        function calcularM2Referenciales() {
-            const ml = parseFloat(document.getElementById('mov-ml-comprados')?.value) || 0;
-            const ancho = parseFloat(document.getElementById('mov-ancho-rollo')?.value) || 0.61;
-            const totalM2 = ml * ancho;
-            const lbl = document.getElementById('lbl-m2-referenciales');
-            const inputCant = document.getElementById('mov-cantidad');
-            if (lbl) lbl.innerText = `${totalM2.toFixed(2)} m²`;
-            if (inputCant) inputCant.value = totalM2.toFixed(2);
-        }
-
-        function actualizarUnidadesModalKardex() {
-            const wrapConv = document.getElementById('wrapper-kardex-conversion-m');
-            const tipo = document.getElementById('mov-tipo-select')?.value;
-            if (wrapConv) {
-                if (tipo === 'ENTRADA') wrapConv.classList.remove('hidden');
-                else wrapConv.classList.add('hidden');
-            }
-        }
-
-        function guardarMovimientoInventario(event) {
-            event.preventDefault();
-            const sku = document.getElementById('mov-insumo-select')?.value;
-            const tipo = document.getElementById('mov-tipo-select')?.value;
-            const concepto = document.getElementById('mov-concepto-select')?.value;
-            const cant = parseFloat(document.getElementById('mov-cantidad')?.value) || 0;
-            const costo = parseFloat(document.getElementById('mov-costo-unitario')?.value) || 0;
-
-            if (!sku || cant <= 0) return;
-
-            if (!db.kardex) db.kardex = [];
-            db.kardex.push({
-                fecha: new Date().toISOString().split('T')[0],
-                insumoCodigo: sku,
-                tipo,
-                concepto,
-                cantidad: cant,
-                costoUnitario: costo,
-                total: cant * costo
-            });
-
-            // Actualizar fecha última compra en insumo
-            if (tipo === 'ENTRADA') {
-                const item = (db.insumos || []).find(i => i.codigo === sku);
-                if (item) {
-                    item.costo = costo;
-                    item.ultimaCompraFecha = new Date().toISOString().split('T')[0];
-                }
-            }
-
-            guardarLocalStorage();
-            cerrarModales();
-            actualizarTodo();
-            mostrarToast("Movimiento Registrado", `Transacción de ${tipo} por ${cant} procesada.`, "📦");
-        }
-
-        function convertirEnProyectoModal() {
-            const modal = document.getElementById('modal-crear-proyecto');
-            const codInput = document.getElementById('pry-codigo-modal');
-            const selectCliente = document.getElementById('pry-cliente-select');
-
-            if (codInput) codInput.value = `PRY-${Math.floor(1000 + Math.random() * 9000)}`;
-            if (selectCliente && db.clientes) {
-                selectCliente.innerHTML = db.clientes.map(c => `<option value="${c.rut}">${c.nombre} (${c.rut})</option>`).join('');
-            }
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function guardarProyectoDesdeCotizacion(event) {
-            event.preventDefault();
-            const codigo = document.getElementById('pry-codigo-modal')?.value;
-            const nombre = document.getElementById('pry-nombre-modal')?.value;
-            const cliente = document.getElementById('pry-cliente-select')?.value;
-
-            const resFinalText = document.getElementById('res-precio-final')?.innerText || "$0";
-            const resBaseText = document.getElementById('res-costo-total-base')?.innerText || "$0";
-
-            const ventaTotal = parseInt(resFinalText.replace(/[^0-9]/g, '')) || 0;
-            const costoBase = parseInt(resBaseText.replace(/[^0-9]/g, '')) || 0;
-
-            if (!db.proyectos) db.proyectos = [];
-            db.proyectos.push({
-                codigo,
-                nombreProyecto: nombre,
-                cliente,
-                descripcion: document.getElementById('cot-tipo-proyecto')?.value === 'merchandising' ? 'Merchandising' : 'Cotización Taller',
-                estado: 'Aprobado',
-                costoBase,
-                ventaTotal,
-                fechaEmision: new Date().toISOString().split('T')[0]
-            });
-
-            guardarLocalStorage();
-            cerrarModales();
-            actualizarTodo();
-            switchTab('registros');
-            mostrarToast("Proyecto Creado", `${codigo} - ${nombre} formalizado en Pipeline.`, "🚀");
-        }
-
-        function resetCotizador() {
-            document.getElementById('form-cotizador')?.reset();
-            calcularCotizacion();
-        }
-
-        function generarCotizacionClienteDesdeCotizador() {
-            alert("Generando propuesta de cotización en formato imprimible/PDF.");
-            window.print();
-        }
-
-        function generarCotizacionClienteModal(idx) {
-            alert(`Generando propuesta oficial para el proyecto ${db.proyectos[idx]?.codigo}.`);
-            window.print();
-        }
-
-        // 1. Reactividad Instantánea y Lógica de Cotización
-        function toggleTipoProyecto() {
-            const tipo = document.getElementById('cot-tipo-proyecto')?.value;
-            const wrapMerch = document.getElementById('wrapper-cot-merchandising');
-            const wrapDim = document.getElementById('wrapper-cot-dimensiones');
-            const wrapPvc = document.getElementById('wrapper-pvc');
-            const rowResPvc = document.getElementById('row-res-pvc');
-            const rowResInd = document.getElementById('row-res-indirecto');
-            const rowResMerch = document.getElementById('row-res-merchandise');
-            const rowResVinilo = document.getElementById('row-res-vinilo');
-            const rowResTransfer = document.getElementById('row-res-transfer');
-            const rowResLaminado = document.getElementById('row-res-laminado');
-
-            if (tipo === 'merchandising') {
-                if (wrapMerch) wrapMerch.classList.remove('hidden');
-                if (wrapDim) wrapDim.classList.add('hidden');
-                if (rowResMerch) rowResMerch.classList.remove('hidden');
-                if (rowResVinilo) rowResVinilo.classList.add('hidden');
-                if (rowResTransfer) rowResTransfer.classList.add('hidden');
-                if (rowResLaminado) rowResLaminado.classList.add('hidden');
-            } else if (tipo === 'sustrato_vinilo') {
-                if (wrapMerch) wrapMerch.classList.add('hidden');
-                if (wrapDim) wrapDim.classList.remove('hidden');
-                if (wrapPvc) wrapPvc.classList.remove('hidden');
-                if (rowResPvc) rowResPvc.classList.remove('hidden');
-                if (rowResInd) rowResInd.classList.remove('hidden');
-                if (rowResMerch) rowResMerch.classList.add('hidden');
-                if (rowResVinilo) rowResVinilo.classList.remove('hidden');
-                if (rowResTransfer) rowResTransfer.classList.remove('hidden');
-                if (rowResLaminado) rowResLaminado.classList.remove('hidden');
-            } else {
-                if (wrapMerch) wrapMerch.classList.add('hidden');
-                if (wrapDim) wrapDim.classList.remove('hidden');
-                if (wrapPvc) wrapPvc.classList.add('hidden');
-                if (rowResPvc) rowResPvc.classList.add('hidden');
-                if (rowResInd) rowResInd.classList.add('hidden');
-                if (rowResMerch) rowResMerch.classList.add('hidden');
-                if (rowResVinilo) rowResVinilo.classList.remove('hidden');
-                if (rowResTransfer) rowResTransfer.classList.remove('hidden');
-                if (rowResLaminado) rowResLaminado.classList.remove('hidden');
-            }
-        }
-
-        function toggleMulticapa() {
-            const mod = document.getElementById('cot-modalidad-color')?.value;
-            const wrap = document.getElementById('wrapper-multicapa');
-            if (wrap) {
-                if (mod === 'multicapa') wrap.classList.remove('hidden');
-                else wrap.classList.add('hidden');
-            }
-        }
-
-        function cargarInfoMerchandising() {
-            const sku = document.getElementById('cot-merchandising-select')?.value;
-            const item = (db.insumos || []).find(i => i.codigo === sku);
-            const lblFecha = document.getElementById('merch-fecha-compra');
-            const lblCosto = document.getElementById('merch-ultimo-costo');
-
-            if (item) {
-                if (lblFecha) lblFecha.innerText = item.ultimaCompraFecha || 'No Comprado';
-                if (lblCosto) lblCosto.innerText = item.costo ? formatearCLP(item.costo) : 'No Comprado';
-            } else {
-                if (lblFecha) lblFecha.innerText = 'No Comprado';
-                if (lblCosto) lblCosto.innerText = 'No Comprado';
-            }
-        }
-
-        function calcularCotizacion() {
-            const tipo = document.getElementById('cot-tipo-proyecto')?.value || 'vinilo_solo';
-            
-            let costoMateriales = 0;
-            let costoManoObra = 0;
-            let subtotalNeto = 0;
-            let valorIVA = 0;
-            let precioFinal = 0;
-
-            if (tipo === 'merchandising') {
-                const sku = document.getElementById('cot-merchandising-select')?.value;
-                const cant = parseFloat(document.getElementById('cot-merchandising-cant')?.value) || 1;
-                const item = (db.insumos || []).find(i => i.codigo === sku);
-                const costoUnit = item ? (item.costo || 0) : 0;
-                costoMateriales = costoUnit * cant;
-
-                const elemMerch = document.getElementById('res-costo-merchandising');
-                if (elemMerch) elemMerch.innerText = formatearCLP(costoMateriales);
-            } else {
-                const unidad = document.getElementById('cot-unidad')?.value || 'cm';
-                let ancho = parseFloat(document.getElementById('cot-ancho')?.value) || 0;
-                let alto = parseFloat(document.getElementById('cot-alto')?.value) || 0;
-
-                if (unidad === 'mm') {
-                    ancho = ancho / 10;
-                    alto = alto / 10;
-                }
-
-                const areaUtil = (ancho * alto) / 10000; // m²
-                const merma = areaUtil * 0.10; // +10% merma
-                const areaTotal = areaUtil + merma;
-
-                // Actualizar info merma explícita
-                const elUtil = document.getElementById('res-merma-util');
-                const elMerma = document.getElementById('res-merma-cant');
-                const elTotal = document.getElementById('res-merma-total');
-                const elAreaLbl = document.getElementById('cot-lbl-area');
-
-                if (elUtil) elUtil.innerText = `${areaUtil.toFixed(2)} m²`;
-                if (elMerma) elMerma.innerText = `${merma.toFixed(2)} m²`;
-                if (elTotal) elTotal.innerText = `${areaTotal.toFixed(2)} m²`;
-                if (elAreaLbl) elAreaLbl.innerText = `${areaUtil.toFixed(2)} m²`;
-
-                // Vinilo
-                const viniloSku = document.getElementById('cot-vinilo-select')?.value;
-                const itemVinilo = (db.insumos || []).find(i => i.codigo === viniloSku);
-                const numCapas = (document.getElementById('cot-modalidad-color')?.value === 'multicapa') ? (parseInt(document.getElementById('cot-num-capas')?.value) || 2) : 1;
-                const costoVinilo = (itemVinilo ? itemVinilo.costo : 2000) * areaTotal * numCapas;
-
-                // Transfer
-                let costoTransfer = 0;
-                if (document.getElementById('cot-check-transfer')?.checked) {
-                    const transSku = document.getElementById('cot-transfer-select')?.value;
-                    const itemTrans = (db.insumos || []).find(i => i.codigo === transSku);
-                    costoTransfer = (itemTrans ? itemTrans.costo : 1500) * areaTotal;
-                }
-
-                // Laminado
-                let costoLaminado = 0;
-                if (document.getElementById('cot-check-laminado')?.checked) {
-                    const lamSku = document.getElementById('cot-laminado-select')?.value;
-                    const itemLam = (db.insumos || []).find(i => i.codigo === lamSku);
-                    costoLaminado = (itemLam ? itemLam.costo : 2500) * areaTotal;
-                }
-
-                // Sustrato PVC
-                let costoPvc = 0;
-                let costoIndirecto = 0;
-                if (tipo === 'sustrato_vinilo') {
-                    const pvcSku = document.getElementById('cot-pvc-select')?.value;
-                    const itemPvc = (db.insumos || []).find(i => i.codigo === pvcSku);
-                    costoPvc = (itemPvc ? itemPvc.costo : 8000) * areaTotal;
-
-                    const indSku = document.getElementById('cot-indirecto-select')?.value;
-                    const itemInd = (db.insumos || []).find(i => i.codigo === indSku);
-                    costoIndirecto = itemInd ? itemInd.costo : 0;
-                }
-
-                costoMateriales = costoVinilo + costoTransfer + costoLaminado + costoPvc + costoIndirecto;
-
-                // Mano de Obra
-                const moVinCod = document.getElementById('cot-mo-vinilo-select')?.value;
-                const moItemVin = (db.manoObraVinilos || []).find(m => m.codigo === moVinCod);
-                const baseMO = moItemVin ? moItemVin.costoBaseM2 : 3000;
-                const factorMO = moItemVin ? moItemVin.factor : 1.0;
-
-                costoManoObra = areaUtil * baseMO * factorMO * (1 + (numCapas - 1) * 0.3);
-
-                if (tipo === 'sustrato_vinilo') {
-                    const moSusCod = document.getElementById('cot-mo-sustrato-select')?.value;
-                    const moItemSus = (db.manoObraSustratos || []).find(m => m.codigo === moSusCod);
-                    const tarifaHora = moItemSus ? moItemSus.tarifaHora : 8000;
-                    costoManoObra += (areaUtil * 0.5) * tarifaHora;
-                }
-
-                // Render dom individual costs
-                const elCostoVin = document.getElementById('res-costo-vinilo');
-                const elCostoTrans = document.getElementById('res-costo-transfer');
-                const elCostoLam = document.getElementById('res-costo-laminado');
-                const elCostoPvc = document.getElementById('res-costo-pvc');
-                const elCostoInd = document.getElementById('res-costo-indirecto');
-
-                if (elCostoVin) elCostoVin.innerText = formatearCLP(costoVinilo);
-                if (elCostoTrans) elCostoTrans.innerText = formatearCLP(costoTransfer);
-                if (elCostoLam) elCostoLam.innerText = formatearCLP(costoLaminado);
-                if (elCostoPvc) elCostoPvc.innerText = formatearCLP(costoPvc);
-                if (elCostoInd) elCostoInd.innerText = formatearCLP(costoIndirecto);
-            }
-
-            const elMO = document.getElementById('res-costo-manoobra');
-            if (elMO) elMO.innerText = formatearCLP(costoManoObra);
-
-            const costoBaseTotal = costoMateriales + costoManoObra;
-            const elBase = document.getElementById('res-costo-total-base');
-            if (elBase) elBase.innerText = formatearCLP(costoBaseTotal);
-
-            const margenPct = parseFloat(document.getElementById('cot-margen')?.value) || 50;
-            subtotalNeto = costoBaseTotal * (1 + (margenPct / 100));
-
-            const factorIVA = parseFloat(document.getElementById('cot-aplica-iva')?.value) || 1.19;
-            if (factorIVA > 1.0) {
-                valorIVA = subtotalNeto * 0.19;
-                precioFinal = subtotalNeto * 1.19;
-            } else {
-                valorIVA = 0;
-                precioFinal = subtotalNeto;
-            }
-
-            const elNeto = document.getElementById('res-subtotal-neto');
-            const elIVA = document.getElementById('res-valor-iva');
-            const elFinal = document.getElementById('res-precio-final');
-
-            if (elNeto) elNeto.innerText = formatearCLP(subtotalNeto);
-            if (elIVA) elIVA.innerText = formatearCLP(valorIVA);
-            if (elFinal) elFinal.innerText = formatearCLP(precioFinal);
-        }
-
-        // --- POBLAR SELECTS ---
-        function poblarSelectsCotizador() {
-            const insumos = db.insumos || [];
-            
-            // Vinilos adhesivos únicamente
-            const selectVinilo = document.getElementById('cot-vinilo-select');
-            if (selectVinilo) {
-                const vinilos = insumos.filter(i => (i.categoria || '').toLowerCase().includes('vinilo') || (i.categoria || '').toLowerCase().includes('pavonado'));
-                selectVinilo.innerHTML = vinilos.map(v => `<option value="${v.codigo}">${v.nombre} (${formatearCLP(v.costo)}/m²)</option>`).join('') || '<option value="">Sin Vinilos</option>';
-            }
-
-            // Sustratos Rígidos (PVC, Acrílico, MDF)
-            const selectPvc = document.getElementById('cot-pvc-select');
-            if (selectPvc) {
-                const sustratos = insumos.filter(i => (i.categoria || '').toLowerCase().includes('placa') || (i.categoria || '').toLowerCase().includes('sustrato') || (i.categoria || '').toLowerCase().includes('pvc'));
-                selectPvc.innerHTML = sustratos.map(s => `<option value="${s.codigo}">${s.nombre} (${formatearCLP(s.costo)}/m²)</option>`).join('') || '<option value="">Sin Sustratos</option>';
-            }
-
-            // Materiales Indirectos
-            const selectInd = document.getElementById('cot-indirecto-select');
-            if (selectInd) {
-                const indirectos = insumos.filter(i => (i.categoria || '').toLowerCase().includes('indirecto') || (i.categoria || '').toLowerCase().includes('insumo'));
-                selectInd.innerHTML = indirectos.map(ind => `<option value="${ind.codigo}">${ind.nombre} (${formatearCLP(ind.costo)})</option>`).join('') || '<option value="NINGUNO">Sin Material Indirecto ($0)</option>';
-            }
-
-            // Transfer Tape
-            const selectTrans = document.getElementById('cot-transfer-select');
-            if (selectTrans) {
-                const transfers = insumos.filter(i => (i.categoria || '').toLowerCase().includes('transfer'));
-                selectTrans.innerHTML = transfers.map(t => `<option value="${t.codigo}">${t.nombre} (${formatearCLP(t.costo)}/m²)</option>`).join('') || '<option value="">Transfer Estándar</option>';
-            }
-
-            // Laminado
-            const selectLam = document.getElementById('cot-laminado-select');
-            if (selectLam) {
-                const laminados = insumos.filter(i => (i.categoria || '').toLowerCase().includes('laminado'));
-                selectLam.innerHTML = laminados.map(l => `<option value="${l.codigo}">${l.nombre} (${formatearCLP(l.costo)}/m²)</option>`).join('') || '<option value="">Laminado UV Matte</option>';
-            }
-
-            // Merchandising
-            const selectMerch = document.getElementById('cot-merchandising-select');
-            if (selectMerch) {
-                const merchs = insumos.filter(i => (i.categoria || '').toLowerCase().includes('merchandising') || (i.categoria || '').toLowerCase().includes('articulo'));
-                selectMerch.innerHTML = merchs.map(m => `<option value="${m.codigo}">${m.nombre} - SKU: ${m.codigo}</option>`).join('') || '<option value="">Sin Artículos</option>';
-            }
-
-            // Mano de Obra Vinilos
-            const selectMOVin = document.getElementById('cot-mo-vinilo-select');
-            if (selectMOVin && db.manoObraVinilos) {
-                selectMOVin.innerHTML = db.manoObraVinilos.map(m => `<option value="${m.codigo}">${m.nombre} (Base: ${formatearCLP(m.costoBaseM2)} | x${m.factor})</option>`).join('');
-            }
-
-            // Mano de Obra Sustratos
-            const selectMOSus = document.getElementById('cot-mo-sustrato-select');
-            if (selectMOSus && db.manoObraSustratos) {
-                selectMOSus.innerHTML = db.manoObraSustratos.map(m => `<option value="${m.codigo}">${m.nombre} (${formatearCLP(m.tarifaHora)}/Hora)</option>`).join('');
-            }
-
-            // Select Kardex Modal
-            const selectMovInsumo = document.getElementById('mov-insumo-select');
-            if (selectMovInsumo) {
-                selectMovInsumo.innerHTML = insumos.map(i => `<option value="${i.codigo}">${i.nombre} (${i.codigo})</option>`).join('');
-            }
-
-            const selectFiltroKardex = document.getElementById('kardex-filtro-insumo');
-            if (selectFiltroKardex) {
-                selectFiltroKardex.innerHTML = '<option value="todos">Todos los Insumos</option>' + insumos.map(i => `<option value="${i.codigo}">${i.nombre}</option>`).join('');
-            }
-        }
-
-        // --- RENDERIZADO DE TABLAS ---
-        function renderArchivos() {
-            // 1. Clientes
-            const tbClientes = document.getElementById('tabla-clientes');
-            if (tbClientes && db.clientes) {
-                tbClientes.innerHTML = db.clientes.map((c, i) => `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-mono font-bold text-brand-600">${c.rut}</td>
-                        <td class="p-3 font-bold text-gray-900">${c.nombre}</td>
-                        <td class="p-3 text-gray-600">${c.comuna || 'Santiago'}, ${c.ciudad || 'Santiago'}</td>
-                        <td class="p-3 text-gray-700">${c.contacto || ''}</td>
-                        <td class="p-3"><span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-bold">${c.courrier || 'Starken'}</span></td>
-                        <td class="p-3 text-right">
-                            <button onclick="db.clientes.splice(${i},1); guardarLocalStorage(); actualizarTodo();" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 2. Insumos
-            const tbInsumos = document.getElementById('tabla-insumos');
-            if (tbInsumos && db.insumos) {
-                tbInsumos.innerHTML = db.insumos.map((ins) => {
-                    const stockCalc = (db.kardex || [])
-                        .filter(k => k.insumoCodigo === ins.codigo)
-                        .reduce((acc, k) => acc + (k.tipo === 'ENTRADA' ? k.cantidad : -k.cantidad), 0);
-
-                    return `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3 font-mono font-bold text-brand-600">${ins.codigo}</td>
-                            <td class="p-3 font-mono text-gray-500">${ins.skuProveedor || '-'}</td>
-                            <td class="p-3 font-bold text-gray-900">${ins.nombre}</td>
-                            <td class="p-3"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-bold">${ins.categoria}</span></td>
-                            <td class="p-3 font-bold ${stockCalc <= 5 ? 'text-rose-600' : 'text-emerald-600'}">${stockCalc.toFixed(2)}</td>
-                            <td class="p-3 text-gray-500">${ins.ultimaCompraFecha || 'No Registrada'}</td>
-                            <td class="p-3 font-semibold">${formatearCLP(ins.costo)}</td>
-                            <td class="p-3 text-right">
-                                <button onclick="eliminarInsumo('${ins.codigo}')" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            // 3. Proveedores
-            const tbProveedores = document.getElementById('tabla-proveedores');
-            if (tbProveedores && db.proveedores) {
-                tbProveedores.innerHTML = db.proveedores.map((p, i) => `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-mono font-bold text-brand-600">${p.rut}</td>
-                        <td class="p-3 font-bold text-gray-900">${p.nombre}</td>
-                        <td class="p-3 text-gray-600">${p.comuna || 'Santiago'}, ${p.ciudad || 'Santiago'}</td>
-                        <td class="p-3 text-gray-700">${p.contacto || ''}</td>
-                        <td class="p-3 text-brand-600 hover:underline"><a href="http://${p.web}" target="_blank">${p.web || '-'}</a></td>
-                        <td class="p-3 text-right">
-                            <button onclick="db.proveedores.splice(${i},1); guardarLocalStorage(); actualizarTodo();" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 4. Courriers
-            const tbCourriers = document.getElementById('tabla-courriers');
-            if (tbCourriers && db.courriers) {
-                tbCourriers.innerHTML = db.courriers.map((co, i) => `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-mono font-bold text-brand-600">${co.codigo}</td>
-                        <td class="p-3 font-bold text-gray-900">${co.nombre}</td>
-                        <td class="p-3 text-gray-700">${co.contacto}</td>
-                        <td class="p-3 text-brand-600 hover:underline"><a href="http://${co.web}" target="_blank">${co.web}</a></td>
-                        <td class="p-3 text-right">
-                            <button onclick="db.courriers.splice(${i},1); guardarLocalStorage(); actualizarTodo();" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 5. Mano de Obra Vinilos
-            const tbMOVin = document.getElementById('tabla-mo-vinilos');
-            if (tbMOVin && db.manoObraVinilos) {
-                tbMOVin.innerHTML = db.manoObraVinilos.map((mv, i) => `
-                    <tr>
-                        <td class="p-2 font-semibold text-gray-800">${mv.nombre}</td>
-                        <td class="p-2 text-right font-mono">${formatearCLP(mv.costoBaseM2)}</td>
-                        <td class="p-2 text-right font-bold text-brand-600">x${mv.factor}</td>
-                        <td class="p-2 text-right"><button onclick="eliminarMOVini(${i})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `).join('');
-            }
-
-            // 6. Mano de Obra Sustratos
-            const tbMOSus = document.getElementById('tabla-mo-sustratos');
-            if (tbMOSus && db.manoObraSustratos) {
-                tbMOSus.innerHTML = db.manoObraSustratos.map((ms, i) => `
-                    <tr>
-                        <td class="p-2 font-semibold text-gray-800">${ms.nombre}</td>
-                        <td class="p-2 text-right font-mono text-blue-600 font-bold">${formatearCLP(ms.tarifaHora)}</td>
-                        <td class="p-2 text-right"><button onclick="eliminarMOSus(${i})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        function renderProyectos() {
-            const tbody = document.getElementById('tabla-proyectos');
-            if (!tbody) return;
-
-            const filtroBuscar = (document.getElementById('pry-filtro-buscar')?.value || '').toLowerCase();
-            const filtroEstado = document.getElementById('pry-filtro-estado')?.value || 'todos';
-
-            let lista = db.proyectos || [];
-
-            if (filtroBuscar) {
-                lista = lista.filter(p => 
-                    (p.codigo || '').toLowerCase().includes(filtroBuscar) ||
-                    (p.nombreProyecto || '').toLowerCase().includes(filtroBuscar) ||
-                    (p.cliente || '').toLowerCase().includes(filtroBuscar)
-                );
-            }
-
-            if (filtroEstado !== 'todos') {
-                lista = lista.filter(p => p.estado === filtroEstado);
-            }
-
-            const lblTotal = document.getElementById('lbl-total-proyectos-num');
-            if (lblTotal) lblTotal.innerText = lista.length;
-
-            tbody.innerHTML = lista.map((p, idx) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 font-mono font-bold text-brand-600">${p.codigo}</td>
-                    <td class="p-3 font-bold text-gray-900">${p.nombreProyecto || 'Proyecto Cortado'}</td>
-                    <td class="p-3 text-gray-700">${p.cliente}</td>
-                    <td class="p-3"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-bold">${p.descripcion || 'Vinilo'}</span></td>
-                    <td class="p-3">
-                        <select onchange="db.proyectos[${idx}].estado = this.value; guardarLocalStorage(); actualizarTodo();" class="p-1 border rounded text-xs font-bold ${p.estado === 'Fabricación' ? 'bg-amber-100 text-amber-800' : p.estado === 'Completado' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">
-                            <option value="Cotizado" ${p.estado === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
-                            <option value="Aprobado" ${p.estado === 'Aprobado' ? 'selected' : ''}>Aprobado</option>
-                            <option value="Fabricación" ${p.estado === 'Fabricación' ? 'selected' : ''}>Fabricación</option>
-                            <option value="Completado" ${p.estado === 'Completado' ? 'selected' : ''}>Completado</option>
-                        </select>
-                    </td>
-                    <td class="p-3 font-semibold text-gray-600">${formatearCLP(p.costoBase)}</td>
-                    <td class="p-3 font-bold text-emerald-600">${formatearCLP(p.ventaTotal)}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="generarCotizacionClienteModal(${idx})" class="text-brand-600 hover:text-brand-800 mr-2" title="Imprimir Cotización"><i class="fa-solid fa-file-pdf"></i></button>
-                    </td>
-                    <td class="p-3 text-right">
-                        <button onclick="eliminarProyecto(${idx})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('') || `<tr><td colspan="9" class="p-4 text-center text-gray-400">Sin proyectos registrados.</td></tr>`;
-        }
-
-        function depurarProyectosAntiguos() {
-            if (confirm("¿Desea depurar proyectos antiguos en estado Completado?")) {
-                db.proyectos = (db.proyectos || []).filter(p => p.estado !== 'Completado');
-                guardarLocalStorage();
-                actualizarTodo();
-                mostrarToast("Depuración Realizada", "Proyectos completados eliminados.", "🧹");
-            }
-        }
-
-        function actualizarTodo() {
-            poblarSelectsCotizador();
-            renderArchivos();
-            renderProyectos();
-            renderKardex();
-            renderIVAMensual();
-            actualizarDashboard();
-            calcularCotizacion();
-        }
-
-        function cargarDatosDemo() {
-            db = {
-                empresa: { nombre: "Vinilos & Letreros Chile Ltda.", rut: "76.458.920-K", direccion: "Av. Providencia 1240, Santiago", telefono: "+56 9 8765 4321", email: "contacto@viniloschile.cl" },
-                clientes: [
-                    { rut: "77.123.456-7", nombre: "Comercial Providencia SpA", comuna: "Providencia", ciudad: "Santiago", contacto: "+56 9 9123 4567", courrier: "Starken" },
-                    { rut: "15.888.999-2", nombre: "María José Fernández", comuna: "Las Condes", ciudad: "Santiago", contacto: "+56 9 8888 7777", courrier: "Chilexpress" }
-                ],
-                proveedores: [
-                    { rut: "96.555.444-1", nombre: "Ritrama Chile S.A.", comuna: "Quilicura", ciudad: "Santiago", contacto: "ventas@ritrama.cl", web: "www.ritrama.cl" },
-                    { rut: "76.111.222-3", nombre: "Plásticos Industriales Ltda.", comuna: "Lampa", ciudad: "Santiago", contacto: "contacto@plasticos.cl", web: "www.plasticos.cl" }
-                ],
-                courriers: [
-                    { codigo: "STK", nombre: "Starken", contacto: "600 200 0000", web: "www.starken.cl" },
-                    { codigo: "CHX", nombre: "Chilexpress", contacto: "600 2000 100", web: "www.chilexpress.cl" }
-                ],
-                manoObraVinilos: [
-                    { codigo: "MO-EST", nombre: "Despeje Estándar / Monocolor", costoBaseM2: 3000, factor: 1.0 },
-                    { codigo: "MO-FINO", nombre: "Despeje Fino / Detalle Complejo", costoBaseM2: 4500, factor: 1.3 }
-                ],
-                manoObraSustratos: [
-                    { codigo: "MO-SUS-EST", nombre: "Corte y Biselado Placa PVC", tarifaHora: 8000 },
-                    { codigo: "MO-SUS-CNC", nombre: "Ruteado Especial CNC / Corpóreo", tarifaHora: 14000 }
-                ],
-                insumos: [
-                    { codigo: "VIN-MON-BLA", skuProveedor: "RIT-MON-100", nombre: "Vinilo Monomérico Blanco Brillante", categoria: "Vinilo Monomérico", costo: 2200, ultimaCompraFecha: "2026-02-15" },
-                    { codigo: "VIN-MON-NEGRO", skuProveedor: "RIT-MON-101", nombre: "Vinilo Monomérico Negro Mate", categoria: "Vinilo Monomérico", costo: 2400, ultimaCompraFecha: "2026-02-18" },
-                    { codigo: "VIN-PAV-01", skuProveedor: "ORA-PAV-88", nombre: "Vinilo Pavonado Esmerilado Premium", categoria: "Pavonado", costo: 3500, ultimaCompraFecha: "2026-01-20" },
-                    { codigo: "TRF-TAPE-01", skuProveedor: "TRF-STD-100", nombre: "Transfer Tape Papel Adhesivo", categoria: "Transfer Tape", costo: 1500, ultimaCompraFecha: "2026-02-01" },
-                    { codigo: "LAM-UV-01", skuProveedor: "LAM-UV-MAT", nombre: "Laminado Protector UV Mate", categoria: "Laminado", costo: 2800, ultimaCompraFecha: "2026-02-10" },
-                    { codigo: "PVC-3MM-122244", skuProveedor: "PVC-TROV-3", nombre: "Placa PVC Espumado 3mm (1.22x2.44m)", categoria: "Placa PVC / Rígido", costo: 8500, ultimaCompraFecha: "2026-02-22" },
-                    { codigo: "IND-PERF-01", skuProveedor: "IND-FIX-10", nombre: "Kit Distanciadores Metálicos y Tornillos", categoria: "Material Indirecto", costo: 4500, ultimaCompraFecha: "2026-01-15" },
-                    { codigo: "MERCH-TAZA-BLA", skuProveedor: "SUB-TAZA-11", nombre: "Taza Sublimable 11oz Blanca", categoria: "Merchandising", costo: 1200, ultimaCompraFecha: "2026-02-28" }
-                ],
-                proyectos: [
-                    { codigo: "PRY-1001", nombreProyecto: "Rotulación Vitrina Providencia", cliente: "Comercial Providencia SpA", descripcion: "Vinilo Monomérico", estado: "Fabricación", costoBase: 25000, ventaTotal: 53550, fechaEmision: "2026-03-01" }
-                ],
-                kardex: [
-                    { fecha: "2026-02-15", insumoCodigo: "VIN-MON-BLA", tipo: "ENTRADA", concepto: "Compra a Proveedor", cantidad: 61, costoUnitario: 2200, total: 134200 },
-                    { fecha: "2026-02-22", insumoCodigo: "PVC-3MM-122244", tipo: "ENTRADA", concepto: "Compra a Proveedor", cantidad: 10, costoUnitario: 8500, total: 85000 }
-                ]
-            };
-            guardarLocalStorage();
-            actualizarTodo();
-            mostrarToast("Datos Demo Cargados", "Base de datos inicializada.", "🚀");
         }
 
         window.onload = function() {
             cargarLocalStorage();
-            if (!db.insumos || db.insumos.length === 0) {
+            if (!db.clientes || db.clientes.length === 0) {
                 cargarDatosDemo();
             } else {
                 actualizarTodo();
